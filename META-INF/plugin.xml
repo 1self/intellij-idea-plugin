@@ -1,0 +1,53 @@
+<idea-plugin version="2">
+    <id>org.quantifieddev.build.plugin.id</id>
+    <name>Quantified Dev Build Plugin</name>
+    <version>1.0</version>
+    <vendor email="support@quantifieddev.org" url="http://www.quantifieddev.org">Quantified Dev</vendor>
+
+    <description><![CDATA[
+      <p>
+      This plugin sends build events to quantifieddev.org.
+      Both build start and finish events (success or failure) are sent to it and
+      you can see how many times during the day you have had good and bad builds.
+      </p>
+      <small>Quantify your builds! <br/>
+      <a href="http://vimeo.com/91935724">Watch this Video</a>
+      </small>
+      ]]></description>
+
+    <change-notes><![CDATA[
+      Add change notes here.<br>
+      <small>most HTML tags may be used</small>
+      ]]>
+    </change-notes>
+
+    <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
+    <idea-version since-build="107.105"/>
+
+    <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+
+    <application-components>
+        <component>
+            <implementation-class>org.quantifieddev.idea.BuildSettingsComponent</implementation-class>
+        </component>
+    </application-components>
+
+    <project-components>
+        <component>
+            <implementation-class>org.quantifieddev.idea.BuildStatusComponent</implementation-class>
+        </component>
+    </project-components>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceInterface="org.quantifieddev.idea.BuildSettingsPersister"
+                            serviceImplementation="org.quantifieddev.idea.BuildSettingsPersister"></applicationService>
+    </extensions>
+</idea-plugin>
