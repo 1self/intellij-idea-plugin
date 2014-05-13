@@ -1,6 +1,6 @@
 package org.quantifieddev.lang
 
-import org.quantifieddev.utils.FileWalker
+import org.quantifieddev.utils.DirWalker
 
 import java.nio.file.Path
 import java.util.regex.Pattern
@@ -10,11 +10,12 @@ class LanguageDetector {
         'csharp' : ['.cs', '.cshtml', '.csx'],
         'groovy':  ['.groovy'],
         'javascript' :  ['.js'],
-        'java': ['.java']
+        'java': ['.java'],
+        'scala': ['.scala']
     ]
 
     public static List<String> detectLanguages(Path projectRoot) {
-        def walker = new FileWalker(projectRoot, Pattern.compile('.*'))
+        def walker = new DirWalker(projectRoot, Pattern.compile('.*'))
         def files = walker.walk()
         def fileExtensions = files.groupBy { file -> fileExtension(file) }.keySet()
         languageFileExtensions.findResults { language, extensions ->

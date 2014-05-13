@@ -7,13 +7,13 @@ import java.nio.file.SimpleFileVisitor
 import java.nio.file.attribute.BasicFileAttributes
 import java.util.regex.Pattern
 
-class FileWalker {
+class DirWalker {
 
     private def files = []
     private Path startDir
     private Pattern collectFilesRegex
 
-    FileWalker(Path startDir, Pattern collectFilesRegex) {
+    DirWalker(Path startDir, Pattern collectFilesRegex) {
         this.startDir = startDir
         this.collectFilesRegex = collectFilesRegex
     }
