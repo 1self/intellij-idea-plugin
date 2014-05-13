@@ -1,7 +1,4 @@
-#intellij-idea-plugin
-====================
-
-##IntelliJ-Idea Plugin for QuantifiedDev
+#IntelliJ-Idea Plugin for QuantifiedDev
 
 ### Overview
 
