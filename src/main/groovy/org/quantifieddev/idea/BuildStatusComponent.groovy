@@ -33,14 +33,20 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
             @Override
             boolean execute(CompileContext compileContext) {
                 println("Starting Compilation!")
-                def startEvent = createBuildStartEventQD(new DateTime(compileContext.properties.startCompilationStamp).toString(isoDateTimeFormat))
-                persist(startEvent)
+                try {
+                    def startEvent = createBuildStartEventQD(new DateTime(compileContext.properties.startCompilationStamp).toString(isoDateTimeFormat))
+                    persist(startEvent)
+                }
+                catch (Exception e) {
+                    println(e.getMessage())
+                    println("Exception occurred! Continuing Compilation!")
+                }
+
             }
         }
         println("BuildStatusComponent Created for Project $project.name")
 
     }
-
 
     //CompilationStatusListener
     @Override
@@ -105,24 +111,24 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
     private def createBuildStartEventQD(startedOn) {
         println("getting stream id: " + settings.streamId)
         [
-            'dateTime': startedOn,
-            'streamid': settings.streamId,
-            'location': ['lat': settings.latitude, 'long': settings.longitude],
-            'objectTags': ['Computer', 'Software'],
-            'actionTags': ['Build', 'Start'],
-            'properties': ['Language': languages, 'Environment': 'IntellijIdea12']
+                'dateTime': startedOn,
+                'streamid': settings.streamId,
+                'location': ['lat': settings.latitude, 'long': settings.longitude],
+                'objectTags': ['Computer', 'Software'],
+                'actionTags': ['Build', 'Start'],
+                'properties': ['Language': languages, 'Environment': 'IntellijIdea12']
         ]
     }
 
     private def createBuildFinishEventQD(compilationStatus, finishedOn) {
         println("getting stream id: " + settings.streamId)
         [
-            'dateTime': finishedOn,
-            'streamid': settings.streamId,
-            'location': ['lat': settings.latitude, 'long': settings.longitude],
-            'objectTags': ['Computer', 'Software'],
-            'actionTags': ['Build', 'Finish'],
-            'properties': ['Result': compilationStatus, 'Language': languages, 'Environment': 'IntellijIdea12']
+                'dateTime': finishedOn,
+                'streamid': settings.streamId,
+                'location': ['lat': settings.latitude, 'long': settings.longitude],
+                'objectTags': ['Computer', 'Software'],
+                'actionTags': ['Build', 'Finish'],
+                'properties': ['Result': compilationStatus, 'Language': languages, 'Environment': 'IntellijIdea12']
         ]
     }
 

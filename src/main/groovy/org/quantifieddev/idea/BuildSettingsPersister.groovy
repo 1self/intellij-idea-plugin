@@ -18,8 +18,7 @@ class BuildSettingsPersister implements PersistentStateComponent<BuildSettingsPe
     private String streamId, writeToken, readToken
     private Double latitude, longitude
 
-    private void createStream()
-    {
+    private void createStream() {
         println("Creating a new stream.")
         def streamDetails = Configuration.repository.register("{}")
         this.streamId = streamDetails.streamid
@@ -87,10 +86,10 @@ class BuildSettingsPersister implements PersistentStateComponent<BuildSettingsPe
     @Override
     BuildSettingsPersister getState() {
         println("getting state")
-        if(this.streamId == null) {
+        if (this.streamId == null) {
             createStream()
         }
-        if(this.latitude == null || this.longitude == null) {
+        if (this.latitude == null || this.longitude == null) {
             locateUser()
         }
         return this
