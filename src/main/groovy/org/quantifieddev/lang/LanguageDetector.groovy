@@ -24,7 +24,7 @@ class LanguageDetector {
     }
 
     private static fileExtension(String pathtofile) {
-        pathtofile.substring(pathtofile.lastIndexOf('.'))
+        pathtofile.lastIndexOf('.')!=-1?pathtofile.substring(pathtofile.lastIndexOf('.')):pathtofile
     }
 }
 
