@@ -57,6 +57,7 @@ public class BuildSettingsComponent implements ApplicationComponent, Configurabl
     void initComponent() {
         println("Initializing App Component.")
         Configuration.setPlatformStreamUri(this.buildSettingsPersister.platformURI)
+        buildSettingsPersister.getState()
     }
 
     @Override
