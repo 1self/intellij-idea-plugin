@@ -2,7 +2,6 @@ package org.quantifieddev.lang
 
 import org.quantifieddev.utils.DirWalker
 
-import java.nio.file.Path
 import java.util.regex.Pattern
 
 class LanguageDetector {
@@ -14,7 +13,7 @@ class LanguageDetector {
         'scala': ['.scala']
     ]
 
-    public static List<String> detectLanguages(Path projectRoot) {
+    public static List<String> detectLanguages(URI projectRoot) {
         def walker = new DirWalker(projectRoot, Pattern.compile('.*'))
         def files = walker.walk()
         def fileExtensions = files.groupBy { file -> fileExtension(file) }.keySet()

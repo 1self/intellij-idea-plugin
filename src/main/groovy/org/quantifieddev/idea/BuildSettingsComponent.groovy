@@ -4,6 +4,7 @@ import com.intellij.openapi.components.ApplicationComponent
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.options.ConfigurationException
+import com.intellij.openapi.util.IconLoader
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
 import org.quantifieddev.Configuration
@@ -40,6 +41,10 @@ public class BuildSettingsComponent implements ApplicationComponent, Configurabl
 
     public String getReadToken() {
         return buildSettingsPersister.getReadToken()
+    }
+
+    public javax.swing.Icon getIcon() {
+        return IconLoader.getIcon("/QD_icon.png")
     }
 
     public void setBuildSettingsData(final String uri, final String streamId, final String readToken, final String writeToken,

@@ -1,16 +1,74 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+sourceCompatibility = '1.6'
+targetCompatibility = '1.6'
+
+defaultTasks 'clean', 'build', 'distribute'
+
 ext {
-    //App Config
     appConfigUrl = new URL("file:///${projectDir}/AppConfig.groovy")
     appConfig = new ConfigSlurper('configuration').parse(appConfigUrl).configuration
     manifest = appConfig.product.distribution.jar.manifest.details
     project.archivesBaseName = appConfig.product.distribution.name
     previousArchiveName = appConfig.product.distribution.previousArchiveName
+    projectLibs = "${projectDir}/libs"
 
-    jettisonLib = 'org.codehaus.jettison:jettison:1.3.3'
+    //common libs
+    groovy = 'org.codehaus.groovy:groovy-all:1.8.8'
+    httpBuilder = 'org.codehaus.groovy.modules.http-builder:http-builder:0.6'
+    jodaTime = 'joda-time:joda-time:2.3'
+    cgLib = 'cglib:cglib-nodep:3.1'
+    jacksonJaxRSProvider = 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.2.3'
+
+    //common test libs
+    junit = 'junit:junit:4.8.1'
+    mockito = 'org.mockito:mockito-all:1.9.5'
+    spock = 'org.spockframework:spock-maven:0.7-groovy-1.8'
+
 }
+
+sourceSets.main.java.srcDirs = ['src/main/java', 'src/main/groovy']
 
 dependencies {
     compile(project.ext.groovy, project.ext.jodaTime,
-            project.ext.httpBuilder, project.ext.jettisonLib,
-            project.ext.cgLib, project.ext.jacksonJaxRSProvider)
+            project.ext.httpBuilder, project.ext.cgLib,
+            project.ext.jacksonJaxRSProvider)
+    compile fileTree(dir:project.ext.projectLibs, include:'**/*.jar')
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        url 'http://code.google.com/p/google-maven-repository'
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.11'
+}
+
+jar {
+    from ("$projectDir/META-INF"){
+        include 'plugin.xml'
+        into 'META-INF'
+    }
+}
+
+task distribute(type:Zip, dependsOn: ['jar']) {
+    doFirst {
+        ant.mkdir(dir:"${project.distsDir}")
+        Set<File> jarFilesToExclude =  fileTree(project.ext.projectLibs).getFiles()
+        Set<File> allJarFiles  = configurations.compile.resolve()
+        def jarFilesToCopy = allJarFiles - jarFilesToExclude
+        copy {
+            from jarFilesToCopy
+            into "$libsDir"
+        }
+    }
+    from ("$libsDir") { into ("${project.archivesBaseName}/lib") }
+    includeEmptyDirs = false
 }

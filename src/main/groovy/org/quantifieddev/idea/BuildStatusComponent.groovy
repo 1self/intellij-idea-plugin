@@ -12,9 +12,6 @@ import org.joda.time.format.ISODateTimeFormat
 import org.quantifieddev.Configuration
 import org.quantifieddev.lang.LanguageDetector
 
-import java.nio.file.Paths
-import java.nio.file.Path
-
 class BuildStatusComponent implements ProjectComponent, CompilationStatusListener {
     def static final String QUANTIFIED_DEV_BUILD_LOGGER = 'Quantified Dev Build Logger'
     private final Project project
@@ -26,7 +23,7 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
     public BuildStatusComponent(Project project, BuildSettingsComponent settings) {
         this.project = project
         this.settings = settings
-        Path projectRoot = Paths.get(project.baseDir.canonicalPath)
+        URI projectRoot = new URI("file:///${project.baseDir.canonicalPath}")
         this.languages = LanguageDetector.detectLanguages(projectRoot)
 
         this.beforeCompileTask = new CompileTask() {

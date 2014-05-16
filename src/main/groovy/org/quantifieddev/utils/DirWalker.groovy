@@ -1,41 +1,33 @@
 package org.quantifieddev.utils
 
-import java.nio.file.FileVisitResult
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.SimpleFileVisitor
-import java.nio.file.attribute.BasicFileAttributes
 import java.util.regex.Pattern
 
 class DirWalker {
 
-    private def files = []
-    private Path startDir
+    private def allFiles = []
+    private URI startDir
     private Pattern collectFilesRegex
 
-    DirWalker(Path startDir, Pattern collectFilesRegex) {
+    DirWalker(URI startDir, Pattern collectFilesRegex) {
         this.startDir = startDir
         this.collectFilesRegex = collectFilesRegex
     }
 
-    private def visitor = new SimpleFileVisitor<Path>() {
-        FileVisitResult visitFile(Path path, BasicFileAttributes mainAtts) {
-            def file = path.toAbsolutePath().toString()
-            def matcher = collectFilesRegex.matcher(file)
-            if(matcher.matches()) {
-                files += file
-            }
-            FileVisitResult.CONTINUE
-        }
-
-        FileVisitResult visitFileFailed(Path path, IOException exc) {
-            FileVisitResult.CONTINUE
-        }
-    }
-
     List<String> walk() {
-        files.clear()
-        Files.walkFileTree(startDir, visitor)
-        files
+        allFiles.clear()
+        File file = new File(startDir)
+        File[] files = file.listFiles()
+        files.each { fileEntry ->
+            if(fileEntry.isDirectory()) {
+               def subDirFiles = new DirWalker(fileEntry.toURI(), collectFilesRegex).walk()
+                allFiles += subDirFiles
+            } else {
+                def matcher = collectFilesRegex.matcher(fileEntry.name)
+                if(matcher.matches()) {
+                    allFiles += fileEntry.name
+                }
+            }
+        }
+        allFiles
     }
 }
