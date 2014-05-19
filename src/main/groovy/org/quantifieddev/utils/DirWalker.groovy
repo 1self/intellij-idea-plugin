@@ -15,11 +15,15 @@ class DirWalker {
 
     List<String> walk() {
         allFiles.clear()
-        File file = new File(startDir)
+        walk0(startDir)
+    }
+
+    private def walk0(URI directory) {
+        File file = new File(directory)
         File[] files = file.listFiles()
         files.each { fileEntry ->
             if(fileEntry.isDirectory()) {
-               def subDirFiles = new DirWalker(fileEntry.toURI(), collectFilesRegex).walk()
+                def subDirFiles = walk0(fileEntry.toURI())
                 allFiles += subDirFiles
             } else {
                 def matcher = collectFilesRegex.matcher(fileEntry.name)
