@@ -14,7 +14,7 @@ Just install the plugin in Idea and start seeing the stats. It's that simple.
 3. Go to File -> Settings(Ctrl+Alt+S) -> Plugins
 4. Click on 'Install plugin from disk...'
 5. Browse to the location where the QuantifiedDev Plugin is downloaded
-6. Select 'intellij-idea-plugin.zip' and click OK
+6. Select 'quantifiedDevIdeaPlugin-0.1.0.Beta1.zip' and click OK
 7. Now 'Quantified Dev Build Plugin' is added to the list of plugins
 8. Click Apply and restart Intellij Idea
 
