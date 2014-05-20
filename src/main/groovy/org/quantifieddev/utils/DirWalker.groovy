@@ -16,22 +16,21 @@ class DirWalker {
     List<String> walk() {
         allFiles.clear()
         walk0(startDir)
+        allFiles
     }
 
-    private def walk0(URI directory) {
+    private void walk0(URI directory) {
         File file = new File(directory)
         File[] files = file.listFiles()
         files.each { fileEntry ->
             if(fileEntry.isDirectory()) {
-                def subDirFiles = walk0(fileEntry.toURI())
-                allFiles += subDirFiles
+                walk0(fileEntry.toURI())
             } else {
                 def matcher = collectFilesRegex.matcher(fileEntry.name)
                 if(matcher.matches()) {
-                    allFiles += fileEntry.name
+                    allFiles << fileEntry.getName()
                 }
             }
         }
-        allFiles
     }
 }

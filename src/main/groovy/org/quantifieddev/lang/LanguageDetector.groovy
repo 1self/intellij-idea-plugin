@@ -1,5 +1,6 @@
 package org.quantifieddev.lang
 
+import groovy.util.logging.Slf4j
 import org.quantifieddev.utils.DirWalker
 
 import java.util.regex.Pattern
