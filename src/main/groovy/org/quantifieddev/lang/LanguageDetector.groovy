@@ -7,9 +7,11 @@ import java.util.regex.Pattern
 class LanguageDetector {
     private static def languageFileExtensions = [
         'csharp' : ['.cs', '.cshtml', '.csx'],
-        'groovy':  ['.groovy'],
+        'groovy':  ['.groovy', '.gsp'],
         'javascript' :  ['.js'],
         'java': ['.java'],
+        'python': ['.py'],
+        'ruby': ['.rb'],
         'scala': ['.scala']
     ]
 
