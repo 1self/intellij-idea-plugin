@@ -15,20 +15,19 @@ class DirWalker {
 
     List<String> walk() {
         allFiles.clear()
-        walk0(startDir)
+        walk0(new File(startDir))
         allFiles
     }
 
-    private void walk0(URI directory) {
-        File file = new File(directory)
-        File[] files = file.listFiles()
-        files.each { fileEntry ->
-            if(fileEntry.isDirectory()) {
-                walk0(fileEntry.toURI())
+    private void walk0(File directory) {
+        File[] files = directory.listFiles()
+        files.each { file ->
+            if(file.isDirectory()) {
+                walk0(file)
             } else {
-                def matcher = collectFilesRegex.matcher(fileEntry.name)
+                def matcher = collectFilesRegex.matcher(file.name)
                 if(matcher.matches()) {
-                    allFiles << fileEntry.getName()
+                    allFiles << file.getName()
                 }
             }
         }
