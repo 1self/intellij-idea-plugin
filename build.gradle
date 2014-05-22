@@ -36,6 +36,7 @@ dependencies {
     compile(project.ext.groovy, project.ext.jodaTime,
             project.ext.httpBuilder, project.ext.cgLib,
             project.ext.jacksonJaxRSProvider)
+    testCompile(project.ext.junit, project.ext.mockito, project.ext.spock)
     compile fileTree(dir:project.ext.projectLibs, include:'**/*.jar')
 }
 
