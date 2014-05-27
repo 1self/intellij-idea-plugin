@@ -12,9 +12,9 @@ class DirWalkerSpec extends Specification {
         DirWalker dirWalker = new DirWalker(new URI("file://$projectRoot"), Pattern.compile("(.*\\.java)|(.*\\.groovy)"));
 
         when:
-        def files = dirWalker.walk()
+        def files = dirWalker.walk() as Set
 
         then:
-        files == ["Sample.groovy", "Hello.java"]
+        files == ["Sample.groovy", "Hello.java"] as Set
     }
 }
