@@ -1,13 +1,18 @@
 package org.quantifieddev.idea
 
+import com.intellij.openapi.ui.Messages
+
 import javax.swing.*
 import java.awt.*
+import java.awt.event.ActionEvent
+import java.awt.event.ActionListener
 
 class BuildSettingsForm {
 
     private JPanel rootComponent;
     private JLabel platformURI, latitude, longitude, streamId, readToken, writeToken;
     private JTextField platformURIText, latitudeText, longitudeText, streamIdText, readTokenText, writeTokenText;
+    private JButton wtfButton;
 
     public BuildSettingsForm() {
         if (rootComponent == null) {
@@ -78,6 +83,14 @@ class BuildSettingsForm {
         longitudeText = new JTextField(30)
         longitude.setLabelFor(longitudeText)
 
+        wtfButton = new JButton("WTF")
+        wtfButton.addActionListener(new ActionListener() {
+            @Override
+            void actionPerformed(ActionEvent e) {
+                Messages.showMessageDialog("WTF!", "QD-WTF", Messages.informationIcon);
+            }
+        })
+
         rootComponent.add(platformURI)
         rootComponent.add(platformURIText)
         rootComponent.add(streamId)
@@ -90,5 +103,6 @@ class BuildSettingsForm {
         rootComponent.add(latitudeText)
         rootComponent.add(longitude)
         rootComponent.add(longitudeText)
+        rootComponent.add(wtfButton)
     }
 }
