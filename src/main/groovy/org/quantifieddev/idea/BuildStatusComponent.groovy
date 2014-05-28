@@ -12,6 +12,9 @@ import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.ISODateTimeFormat
 import org.quantifieddev.Configuration
 import org.quantifieddev.lang.LanguageDetector
+import org.quantifieddev.utils.DirWalker
+
+import java.util.regex.Pattern
 
 class BuildStatusComponent implements ProjectComponent, CompilationStatusListener {
     def static final String QUANTIFIED_DEV_BUILD_LOGGER = 'Quantified Dev Build Logger'
@@ -21,13 +24,18 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
     private final DateTimeFormatter isoDateTimeFormat = ISODateTimeFormat.dateTimeNoMillis()
     private final languages
     private final long timeToDetectProjectLanguages
+    private final long totalFilesScanned
+    private final Pattern regex = Pattern.compile(LanguageDetector.languageFileExtensions.values().flatten().collect { "(.*\\$it)" }.join('|'))
 
     public BuildStatusComponent(Project project, BuildSettingsComponent settings) {
         this.project = project
         this.settings = settings
         URI projectRoot = new URI("file:///${project.baseDir.canonicalPath}")
         long startTime = System.currentTimeMillis()
-        this.languages = LanguageDetector.detectLanguages(projectRoot)
+        def walker = new DirWalker(projectRoot, regex)
+        def files = walker.walk()
+        this.totalFilesScanned = files.size()
+        this.languages = LanguageDetector.detectLanguages(files)
         this.timeToDetectProjectLanguages = System.currentTimeMillis() - startTime
 
         this.beforeCompileTask = new CompileTask() {
@@ -64,7 +72,6 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
             println(e.getMessage())
             println("Exception occurred after compilation! Ignoring and proceeding...")
         }
-
     }
 
     //CompilationStatusListener
@@ -125,7 +132,7 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
                 'location': ['lat': settings.latitude, 'long': settings.longitude],
                 'objectTags': ['Computer', 'Software'],
                 'actionTags': ['Build', 'Start'],
-                'properties': ['Language': languages, 'Environment': 'IntellijIdea12', 'TimeToDetectProjectLanguages': timeToDetectProjectLanguages]
+                'properties': ['Language': languages, 'Environment': 'IntellijIdea12', 'TimeToDetectProjectLanguages': timeToDetectProjectLanguages, 'TotalFilesScanned': totalFilesScanned]
         ]
     }
 
@@ -137,7 +144,7 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
                 'location': ['lat': settings.latitude, 'long': settings.longitude],
                 'objectTags': ['Computer', 'Software'],
                 'actionTags': ['Build', 'Finish'],
-                'properties': ['Result': compilationStatus, 'Language': languages, 'Environment': 'IntellijIdea12', 'TimeToDetectProjectLanguages': timeToDetectProjectLanguages]
+                'properties': ['Result': compilationStatus, 'Language': languages, 'Environment': 'IntellijIdea12', 'TimeToDetectProjectLanguages': timeToDetectProjectLanguages, 'TotalFilesScanned': totalFilesScanned]
         ]
     }
 

@@ -1,11 +1,7 @@
 package org.quantifieddev.lang
 
-import org.quantifieddev.utils.DirWalker
-
-import java.util.regex.Pattern
-
 class LanguageDetector {
-    private static def languageFileExtensions = [
+    public static def languageFileExtensions = [
         'csharp' : ['.cs', '.cshtml', '.csx'],
         'groovy':  ['.groovy', '.gsp'],
         'javascript' :  ['.js'],
@@ -15,11 +11,7 @@ class LanguageDetector {
         'scala': ['.scala']
     ]
 
-    private static Pattern regex = Pattern.compile(languageFileExtensions.values().flatten().collect { "(.*\\$it)" }.join('|'))
-
-    public static List<String> detectLanguages(URI projectRoot) {
-        def walker = new DirWalker(projectRoot, regex)
-        def files = walker.walk()
+    public static List<String> detectLanguages(List<String> files) {
         def fileExtensions = files.groupBy { file -> fileExtension(file) }.keySet()
         languageFileExtensions.findResults { language, extensions ->
             extensions.intersect(fileExtensions)? language : null
