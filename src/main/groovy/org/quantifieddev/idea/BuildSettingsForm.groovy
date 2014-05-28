@@ -1,7 +1,7 @@
 package org.quantifieddev.idea
 
 import javax.swing.*
-import java.awt.GridLayout
+import java.awt.*
 
 class BuildSettingsForm {
 
@@ -37,11 +37,13 @@ class BuildSettingsForm {
     }
 
     private boolean isLatitudeModified(BuildSettingsComponent data) {
-        return latitudeText.getText() != null ? !Double.parseDouble(latitudeText.getText()).equals(data.latitude) : data.latitude != null
+        def latitude = latitudeText.getText()
+        return (latitude != null && latitude != "null") ? !Double.parseDouble(latitude).equals(data.latitude) : data.latitude != null
     }
 
     private boolean isLongitudeModified(BuildSettingsComponent data) {
-        return longitudeText.getText() != null ? !Double.parseDouble(longitudeText.getText()).equals(data.longitude) : data.longitude != null
+        def longitude = longitudeText.getText()
+        return (longitude != null && longitude != "null") ? !Double.parseDouble(longitude).equals(data.longitude) : data.longitude != null
     }
 
     private void createUIComponents() {
