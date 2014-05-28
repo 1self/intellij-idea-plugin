@@ -1,7 +1,8 @@
 package org.quantifieddev.idea
 
 import com.intellij.openapi.components.PersistentStateComponent
-import com.intellij.openapi.components.*
+import com.intellij.openapi.components.State
+import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.XmlSerializerUtil
 import org.quantifieddev.Configuration
 
@@ -87,22 +88,20 @@ class BuildSettingsPersister implements PersistentStateComponent<BuildSettingsPe
     BuildSettingsPersister getState() {
         println("getting state")
         if (this.streamId == null) {
-            try{
+            try {
                 createStream()
             }
-            catch(Exception e) {
+            catch (Exception e) {
                 println("Exception : " + e.message)
                 println("Exception during creating stream! Proceeding further without registration...")
             }
         }
-        if (this.latitude == null || this.longitude == null) {
-            try {
-                locateUser()
-            }
-            catch(Exception e) {
-                println("Exception : " + e.message)
-                println("Exception during fetching user location! Proceeding further with existing details...")
-            }
+        try {
+            locateUser()
+        }
+        catch (Exception e) {
+            println("Exception : " + e.message)
+            println("Exception during fetching user location! Proceeding further with existing details...")
         }
         return this
     }
