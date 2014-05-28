@@ -87,10 +87,22 @@ class BuildSettingsPersister implements PersistentStateComponent<BuildSettingsPe
     BuildSettingsPersister getState() {
         println("getting state")
         if (this.streamId == null) {
-            createStream()
+            try{
+                createStream()
+            }
+            catch(Exception e) {
+                println("Exception : " + e.message)
+                println("Exception during creating stream! Proceeding further without registration...")
+            }
         }
         if (this.latitude == null || this.longitude == null) {
-            locateUser()
+            try {
+                locateUser()
+            }
+            catch(Exception e) {
+                println("Exception : " + e.message)
+                println("Exception during fetching user location! Proceeding further with existing details...")
+            }
         }
         return this
     }
