@@ -34,6 +34,7 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
             @Override
             boolean execute(CompileContext compileContext) {
                 println("Starting Compilation!")
+                def executionSuceeded = true    //Exception in plugin should not abort the compilation
                 try {
                     def startEvent = createBuildStartEventQD(new DateTime(compileContext.properties.startCompilationStamp).toString(isoDateTimeFormat))
                     persist(startEvent)
@@ -42,6 +43,7 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
                     println(e.getMessage())
                     println("Exception occurred! Continuing Compilation!")
                 }
+                executionSuceeded
             }
         }
         println("BuildStatusComponent Created for Project $project.name")
@@ -54,8 +56,15 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
         println("Compilation finished!")
         println("COMPILATION CONTEXT = ${compileContext.properties}")
         println("COMPILATION Aborted = $aborted, Errors = $errors")
-        def finishEvent = createBuildFinishEventQD(getCompilationStatus(aborted, errors), new DateTime().toString(isoDateTimeFormat))
-        persist(finishEvent)
+        try {
+            def finishEvent = createBuildFinishEventQD(getCompilationStatus(aborted, errors), new DateTime().toString(isoDateTimeFormat))
+            persist(finishEvent)
+        }
+        catch (Exception e) {
+            println(e.getMessage())
+            println("Exception occurred after compilation! Ignoring and proceeding...")
+        }
+
     }
 
     //CompilationStatusListener
