@@ -43,10 +43,6 @@ public class BuildSettingsComponent implements ApplicationComponent, Configurabl
         return buildSettingsPersister.getReadToken()
     }
 
-    public javax.swing.Icon getIcon() {
-        return IconLoader.getIcon("/QD_icon.png")
-    }
-
     public void setBuildSettingsData(final String uri, final String streamId, final String readToken, final String writeToken,
                                      final String latitude, final String longitude) {
         buildSettingsPersister.setPlatformURI(uri)
