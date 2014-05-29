@@ -129,7 +129,6 @@ class BuildSettingsForm {
                         "wtf"
                 ],
                 "properties": [
-                        "Language":['java'],
                         "Environment": "IntellijIdea12"
                 ]
         ]
