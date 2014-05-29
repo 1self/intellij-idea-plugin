@@ -13,6 +13,7 @@ import org.joda.time.format.ISODateTimeFormat
 import org.quantifieddev.Configuration
 import org.quantifieddev.lang.LanguageDetector
 import org.quantifieddev.utils.DirWalker
+import org.quantifieddev.utils.EventLogger
 
 import java.util.regex.Pattern
 
@@ -41,36 +42,28 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
         this.beforeCompileTask = new CompileTask() {
             @Override
             boolean execute(CompileContext compileContext) {
-                println("Starting Compilation!")
                 def executionSuceeded = true    //Exception in plugin should not abort the compilation
                 try {
                     def startEvent = createBuildStartEventQD(new DateTime(compileContext.properties.startCompilationStamp).toString(isoDateTimeFormat))
                     persist(startEvent)
                 }
                 catch (Exception e) {
-                    println(e.getMessage())
-                    println("Exception occurred! Continuing Compilation!")
+                    EventLogger.logError("Could Not Send Event to quantifieddev.org", e.message)
                 }
                 executionSuceeded
             }
         }
-        println("BuildStatusComponent Created for Project $project.name")
-
     }
 
     //CompilationStatusListener
     @Override
     void compilationFinished(boolean aborted, int errors, int warnings, final CompileContext compileContext) {
-        println("Compilation finished!")
-        println("COMPILATION CONTEXT = ${compileContext.properties}")
-        println("COMPILATION Aborted = $aborted, Errors = $errors")
         try {
             def finishEvent = createBuildFinishEventQD(getCompilationStatus(aborted, errors), new DateTime().toString(isoDateTimeFormat))
             persist(finishEvent)
         }
         catch (Exception e) {
-            println(e.getMessage())
-            println("Exception occurred after compilation! Ignoring and proceeding...")
+            EventLogger.logError("Could Not Send Event to quantifieddev.org", e.message)
         }
     }
 
@@ -125,7 +118,6 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
     //todo: really its a general question that we need to have a guideline on:
     //todo: when should a property be upgraded to a object tag or vice versa?
     private def createBuildStartEventQD(startedOn) {
-        println("getting stream id: " + settings.streamId)
         [
                 'dateTime': startedOn,
                 'streamid': settings.streamId,
@@ -137,7 +129,6 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
     }
 
     private def createBuildFinishEventQD(compilationStatus, finishedOn) {
-        println("getting stream id: " + settings.streamId)
         [
                 'dateTime': finishedOn,
                 'streamid': settings.streamId,
@@ -149,7 +140,6 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
     }
 
     private def persist(Map event) {
-        println("Persisting... $event")
         Configuration.repository.insert(event, settings.writeToken);
     }
 }
