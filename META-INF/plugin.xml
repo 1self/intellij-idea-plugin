@@ -49,5 +49,8 @@
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceInterface="org.quantifieddev.idea.BuildSettingsPersister"
                             serviceImplementation="org.quantifieddev.idea.BuildSettingsPersister"></applicationService>
+        <toolWindow id="WTF" anchor="right" secondary="true"
+                    factoryClass="org.quantifieddev.idea.WTFToolWindow"
+                    icon="QD_icon.png"></toolWindow>
     </extensions>
 </idea-plugin>
