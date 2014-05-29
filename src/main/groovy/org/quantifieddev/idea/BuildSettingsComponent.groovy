@@ -105,7 +105,7 @@ public class BuildSettingsComponent implements ApplicationComponent, Configurabl
     @Override
     public void apply() throws ConfigurationException {
         if (form != null) {
-            form.getData(this);
+            form.setBuildSettingsData(this);
         }
 
     }
