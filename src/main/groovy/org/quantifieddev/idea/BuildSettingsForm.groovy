@@ -1,22 +1,13 @@
 package org.quantifieddev.idea
 
-import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormatter
-import org.joda.time.format.ISODateTimeFormat
-import org.quantifieddev.Configuration
-
 import javax.swing.*
 import java.awt.*
-import java.awt.event.ActionEvent
-import java.awt.event.ActionListener
 
 class BuildSettingsForm {
 
     private JPanel rootComponent;
     private JLabel platformURI, latitude, longitude, streamId, readToken, writeToken;
     private JTextField platformURIText, latitudeText, longitudeText, streamIdText, readTokenText, writeTokenText;
-    private JButton wtfButton;
-    private final DateTimeFormatter isoDateTimeFormat = ISODateTimeFormat.dateTimeNoMillis()
 
     public BuildSettingsForm() {
         if (rootComponent == null) {
@@ -87,15 +78,6 @@ class BuildSettingsForm {
         longitudeText = new JTextField(30)
         longitude.setLabelFor(longitudeText)
 
-        wtfButton = new JButton("WTF")
-        wtfButton.addActionListener(new ActionListener() {
-            @Override
-            void actionPerformed(ActionEvent e) {
-                Map wtfEvent = createWTFEventQD()
-                persist(wtfEvent)
-            }
-        })
-
         rootComponent.add(platformURI)
         rootComponent.add(platformURIText)
         rootComponent.add(streamId)
@@ -108,36 +90,5 @@ class BuildSettingsForm {
         rootComponent.add(latitudeText)
         rootComponent.add(longitude)
         rootComponent.add(longitudeText)
-        rootComponent.add(wtfButton)
     }
-
-    private Map createWTFEventQD() {
-        println("Creating WTF event ")
-        [
-                "dateTime": ['$date' : new DateTime().toString(isoDateTimeFormat)],
-                "streamid": streamIdText.getText(),
-                "location": [
-                        "lat":latitudeText.getText(),
-                        "long": longitudeText.getText()
-                ],
-                "objectTags": [
-                        "Computer",
-                        "Software",
-                        "code"
-                ],
-                "actionTags": [
-                        "wtf"
-                ],
-                "properties": [
-                        "Environment": "IntellijIdea12"
-                ]
-        ]
-
-    }
-
-    private def persist(Map event) {
-        println("Persisting... $event")
-        Configuration.repository.insert(event, writeToken.text);
-    }
-
 }

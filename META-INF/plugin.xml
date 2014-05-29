@@ -50,7 +50,7 @@
         <applicationService serviceInterface="org.quantifieddev.idea.BuildSettingsPersister"
                             serviceImplementation="org.quantifieddev.idea.BuildSettingsPersister"></applicationService>
         <toolWindow id="Quantified Dev" anchor="bottom" secondary="true"
-                    factoryClass="org.quantifieddev.idea.WTFToolWindow"
+                    factoryClass="org.quantifieddev.idea.ToolWindowFactory"
                     icon="/QDLogo_13x13.png"></toolWindow>
     </extensions>
 </idea-plugin>
