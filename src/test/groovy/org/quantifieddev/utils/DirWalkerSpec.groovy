@@ -8,8 +8,8 @@ class DirWalkerSpec extends Specification {
 
     def "it returns files matching specified regex in a given directory"() {
         given:
-        def projectRoot = new File("src/test/resources").getAbsolutePath() + "/SampleProject"
-        DirWalker dirWalker = new DirWalker(new URI("file://$projectRoot"), Pattern.compile("(.*\\.java)|(.*\\.groovy)"));
+        def projectRoot = new File("src/test/resources/SampleProject")
+        DirWalker dirWalker = new DirWalker(projectRoot.toURI(), Pattern.compile("(.*\\.java)|(.*\\.groovy)"));
 
         when:
         def files = dirWalker.walk() as Set
