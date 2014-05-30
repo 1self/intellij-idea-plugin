@@ -11,6 +11,8 @@ import org.quantifieddev.utils.EventLogger
 import javax.swing.JButton
 import javax.swing.JPanel
 import java.awt.Dimension
+import java.awt.GridBagConstraints
+import java.awt.GridBagLayout
 import java.awt.GridLayout
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
@@ -25,7 +27,15 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
     ToolWindowFactory(BuildSettingsComponent settings) {
         this.settings = settings
         wtfButton = new JButton("WTF!!")
-        wtfButton.setSize(10, 10)
+        toolWindowContent = new JPanel()
+        toolWindowContent.setLayout(new GridBagLayout())
+        toolWindowContent.setPreferredSize(new Dimension(5, 5))
+        GridBagConstraints c = new GridBagConstraints();
+       // c.fill = GridBagConstraints.CENTER;
+        c.gridwidth = 1;
+        c.gridx = 0;
+        c.gridy = 1;
+        wtfButton.setSize(5, 5)
         wtfButton.addActionListener(new ActionListener() {
             @Override
             void actionPerformed(ActionEvent e) {
@@ -33,11 +43,15 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
                 persist(wtfEvent)
             }
         })
+                              /* button = new JButton("Long-Named Button 4");
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.weightx = 0.0;
+    c.gridwidth = 3;
+    c.gridx = 0;
+    c.gridy = 1;
+    pane.add(button, c);*/
 
-        toolWindowContent = new JPanel()
-        toolWindowContent.setPreferredSize(new Dimension(10, 10))
-        toolWindowContent.setLayout(new GridLayout(1, 1, 2, 2))
-        toolWindowContent.add(wtfButton)
+        toolWindowContent.add(wtfButton,c)
     }
 
     private Map createWTFEventQD() {
