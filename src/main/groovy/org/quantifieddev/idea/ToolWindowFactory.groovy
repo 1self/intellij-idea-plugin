@@ -31,7 +31,7 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         toolWindowContent.setLayout(new GridBagLayout())
         toolWindowContent.setPreferredSize(new Dimension(5, 5))
         GridBagConstraints constraints = new GridBagConstraints()
-        constraints.fill = GridBagConstraints.WEST
+        constraints.anchor = GridBagConstraints.WEST
         constraints.gridwidth = 1
         constraints.gridx = 1
         constraints.gridy = 1
@@ -48,7 +48,7 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
 
         JLabel codeSucksLabel = new JLabel("This Code Sucks, Click -->")
         constraints = new GridBagConstraints()
-        constraints.fill = GridBagConstraints.WEST
+        constraints.anchor = GridBagConstraints.EAST
         constraints.gridwidth = 1
         constraints.gridx = 0
         constraints.gridy = 1
