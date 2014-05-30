@@ -6,7 +6,6 @@ import com.intellij.openapi.compiler.CompileTask
 import com.intellij.openapi.compiler.CompilerManager
 import com.intellij.openapi.components.ProjectComponent
 import com.intellij.openapi.project.Project
-import groovy.util.logging.Slf4j
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.ISODateTimeFormat
@@ -119,23 +118,23 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
     //todo: when should a property be upgraded to a object tag or vice versa?
     private def createBuildStartEventQD(startedOn) {
         [
-                'dateTime': startedOn,
-                'streamid': settings.streamId,
-                'location': ['lat': settings.latitude, 'long': settings.longitude],
-                'objectTags': ['Computer', 'Software'],
-                'actionTags': ['Build', 'Start'],
-                'properties': ['Language': languages, 'Environment': 'IntellijIdea12', 'TimeToDetectProjectLanguages': timeToDetectProjectLanguages, 'TotalFilesScanned': totalFilesScanned]
+            'dateTime': startedOn,
+            'streamid': settings.streamId,
+            'location': ['lat': settings.latitude, 'long': settings.longitude],
+            'objectTags': ['Computer', 'Software'],
+            'actionTags': ['Build', 'Start'],
+            'properties': ['Language': languages, 'Environment': 'IntellijIdea12', 'TimeToDetectProjectLanguages': timeToDetectProjectLanguages, 'TotalFilesScanned': totalFilesScanned]
         ]
     }
 
     private def createBuildFinishEventQD(compilationStatus, finishedOn) {
         [
-                'dateTime': finishedOn,
-                'streamid': settings.streamId,
-                'location': ['lat': settings.latitude, 'long': settings.longitude],
-                'objectTags': ['Computer', 'Software'],
-                'actionTags': ['Build', 'Finish'],
-                'properties': ['Result': compilationStatus, 'Language': languages, 'Environment': 'IntellijIdea12', 'TimeToDetectProjectLanguages': timeToDetectProjectLanguages, 'TotalFilesScanned': totalFilesScanned]
+            'dateTime': finishedOn,
+            'streamid': settings.streamId,
+            'location': ['lat': settings.latitude, 'long': settings.longitude],
+            'objectTags': ['Computer', 'Software'],
+            'actionTags': ['Build', 'Finish'],
+            'properties': ['Result': compilationStatus, 'Language': languages, 'Environment': 'IntellijIdea12', 'TimeToDetectProjectLanguages': timeToDetectProjectLanguages, 'TotalFilesScanned': totalFilesScanned]
         ]
     }
 
