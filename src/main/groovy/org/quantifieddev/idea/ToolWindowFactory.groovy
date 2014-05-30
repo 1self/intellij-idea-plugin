@@ -56,6 +56,14 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
     }
 
     private Map createWTFEventQD(languages) {
+        def objectTags = ['Computer', 'Software']
+        def properties = ['Environment': 'IntellijIdea12']
+
+        if(languages) {
+          objectTags << 'code'
+          properties << ['Language' : languages]
+        }
+
         [
             "dateTime": ['$date' : new DateTime().toString(DateFormat.isoDateTime)],
             "streamid": settings.streamId,
@@ -63,21 +71,11 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
                     "lat":settings.latitude,
                     "long": settings.longitude
             ],
-            "objectTags": [
-                    "Computer",
-                    "Software",
-                    "code"
-            ],
-            "actionTags": [
-                    "wtf"
-            ],
-            "properties": [
-                    "Environment": "IntellijIdea12",
-                    "Language" : languages
-            ]
+            "objectTags": objectTags,
+            "actionTags": ['wtf'],
+            "properties": properties
         ]
     }
-
 
     @Override
     void createToolWindowContent(Project project, com.intellij.openapi.wm.ToolWindow toolWindow) {
@@ -90,11 +88,19 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
             @Override
             void actionPerformed(ActionEvent e) {
                 Editor editor = fileEditorManager.getSelectedTextEditor()
-                Document document = editor.getDocument()
-                final VirtualFile file = fileDocumentManager.getFile(document)
-                def languages = LanguageDetector.detectLanguages([file.canonicalPath])
-                if (languages) {
-                    Map wtfEvent = createWTFEventQD(languages)
+                if(editor) {
+                    Document document = editor.getDocument()
+                    final VirtualFile file = fileDocumentManager.getFile(document)
+                    def languages = LanguageDetector.detectLanguages([file.canonicalPath])
+                    if (languages) {
+                        Map wtfEvent = createWTFEventQD(languages)
+                        persist(wtfEvent)
+                    } else {
+                        Map wtfEvent = createWTFEventQD()
+                        persist(wtfEvent)
+                    }
+                } else {
+                    Map wtfEvent = createWTFEventQD()
                     persist(wtfEvent)
                 }
             }
