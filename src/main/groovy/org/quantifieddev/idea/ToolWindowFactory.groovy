@@ -9,11 +9,11 @@ import org.quantifieddev.utils.DateFormat
 import org.quantifieddev.utils.EventLogger
 
 import javax.swing.JButton
+import javax.swing.JLabel
 import javax.swing.JPanel
 import java.awt.Dimension
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
-import java.awt.GridLayout
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 
@@ -26,15 +26,16 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
 
     ToolWindowFactory(BuildSettingsComponent settings) {
         this.settings = settings
-        wtfButton = new JButton("WTF!!")
+
         toolWindowContent = new JPanel()
         toolWindowContent.setLayout(new GridBagLayout())
         toolWindowContent.setPreferredSize(new Dimension(5, 5))
-        GridBagConstraints c = new GridBagConstraints();
-       // c.fill = GridBagConstraints.CENTER;
-        c.gridwidth = 1;
-        c.gridx = 0;
-        c.gridy = 1;
+        GridBagConstraints constraints = new GridBagConstraints()
+        constraints.fill = GridBagConstraints.WEST
+        constraints.gridwidth = 1
+        constraints.gridx = 1
+        constraints.gridy = 1
+        wtfButton = new JButton("WTF!!")
         wtfButton.setSize(5, 5)
         wtfButton.addActionListener(new ActionListener() {
             @Override
@@ -43,36 +44,37 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
                 persist(wtfEvent)
             }
         })
-                              /* button = new JButton("Long-Named Button 4");
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.weightx = 0.0;
-    c.gridwidth = 3;
-    c.gridx = 0;
-    c.gridy = 1;
-    pane.add(button, c);*/
+        toolWindowContent.add(wtfButton, constraints)
 
-        toolWindowContent.add(wtfButton,c)
+        JLabel codeSucksLabel = new JLabel("This Code Sucks, Click -->")
+        constraints = new GridBagConstraints()
+        constraints.fill = GridBagConstraints.WEST
+        constraints.gridwidth = 1
+        constraints.gridx = 0
+        constraints.gridy = 1
+        toolWindowContent.add(codeSucksLabel, constraints)
+
     }
 
     private Map createWTFEventQD() {
         [
-                "dateTime": ['$date' : new DateTime().toString(DateFormat.isoDateTime)],
-                "streamid": settings.streamId,
-                "location": [
-                        "lat":settings.latitude,
-                        "long": settings.longitude
-                ],
-                "objectTags": [
-                        "Computer",
-                        "Software",
-                        "code"
-                ],
-                "actionTags": [
-                        "wtf"
-                ],
-                "properties": [
-                        "Environment": "IntellijIdea12"
-                ]
+            "dateTime": ['$date' : new DateTime().toString(DateFormat.isoDateTime)],
+            "streamid": settings.streamId,
+            "location": [
+                    "lat":settings.latitude,
+                    "long": settings.longitude
+            ],
+            "objectTags": [
+                    "Computer",
+                    "Software",
+                    "code"
+            ],
+            "actionTags": [
+                    "wtf"
+            ],
+            "properties": [
+                    "Environment": "IntellijIdea12"
+            ]
         ]
     }
 
