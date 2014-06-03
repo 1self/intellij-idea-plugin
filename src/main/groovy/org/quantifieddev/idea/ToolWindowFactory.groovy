@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.event.DocumentAdapter
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import org.joda.time.DateTime
@@ -27,7 +28,7 @@ import java.awt.event.ActionListener
 
 class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
 
-    private JButton wtfButton
+    private JButton wtfButton, settingsButton
     private com.intellij.openapi.wm.ToolWindow toolWindow
     private JPanel toolWindowContent
     private BuildSettingsComponent settings
@@ -42,17 +43,17 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         constraints.gridwidth = 1
         constraints.gridx = 1
         constraints.gridy = 1
-        wtfButton = new JButton("WTF!!")
+        wtfButton = new JButton('WTF?!')
         wtfButton.setSize(5, 5)
         toolWindowContent.add(wtfButton, constraints)
 
-        JLabel codeSucksLabel = new JLabel("This Code Sucks, Click -->")
+        settingsButton = new JButton('S')
         constraints = new GridBagConstraints()
-        constraints.anchor = GridBagConstraints.EAST
+        constraints.anchor = GridBagConstraints.WEST
         constraints.gridwidth = 1
         constraints.gridx = 0
         constraints.gridy = 1
-        toolWindowContent.add(codeSucksLabel, constraints)
+        toolWindowContent.add(settingsButton, constraints)
     }
 
     private Map createWTFEventQD(languages) {
@@ -81,14 +82,19 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
     void createToolWindowContent(Project project, com.intellij.openapi.wm.ToolWindow toolWindow) {
         this.toolWindow = toolWindow
         Component component = toolWindow.getComponent()
+        setupSettingsButtonListener(project)
+        setupWtfButtonListener(project)
+        component.getParent().add(toolWindowContent)
+    }
+
+    private void setupWtfButtonListener(Project project) {
         final FileEditorManager fileEditorManager = FileEditorManager.getInstance(project)
         final FileDocumentManager fileDocumentManager = FileDocumentManager.getInstance()
-
         wtfButton.addActionListener(new ActionListener() {
             @Override
             void actionPerformed(ActionEvent e) {
                 Editor editor = fileEditorManager.getSelectedTextEditor()
-                if(editor) {
+                if (editor) {
                     Document document = editor.getDocument()
                     final VirtualFile file = fileDocumentManager.getFile(document)
                     def languages = LanguageDetector.detectLanguages([file.canonicalPath])
@@ -105,7 +111,16 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
                 }
             }
         })
-        component.getParent().add(toolWindowContent)
+    }
+
+    private void setupSettingsButtonListener(project) {
+        settingsButton.addActionListener(new ActionListener() {
+            @Override
+            void actionPerformed(ActionEvent e) {
+                ShowSettingsUtil settingsUtil = ShowSettingsUtil.getInstance()
+                settingsUtil.showSettingsDialog(project, BuildSettingsComponent)
+            }
+        })
     }
 
     private def persist(Map event) {

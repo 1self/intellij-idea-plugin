@@ -42,12 +42,11 @@ public class BuildSettingsComponent implements ApplicationComponent, Configurabl
         return buildSettingsPersister.getReadToken()
     }
 
-    public void setBuildSettingsData(final String uri, final String streamId, final String readToken, final String writeToken,
-                                     final String latitude, final String longitude) {
-        buildSettingsPersister.setPlatformURI(uri)
+    public void setBuildSettingsData(final String streamId, final String readToken, final String latitude, final String longitude) {
+//        buildSettingsPersister.setPlatformURI(uri)
         buildSettingsPersister.setStreamId(streamId)
         buildSettingsPersister.setReadToken(readToken)
-        buildSettingsPersister.setWriteToken(writeToken)
+//        buildSettingsPersister.setWriteToken(writeToken)
         buildSettingsPersister.setLatitude(Double.parseDouble(latitude))
         buildSettingsPersister.setLongitude(Double.parseDouble(longitude))
         buildSettingsPersister.loadState(buildSettingsPersister)
