@@ -6,6 +6,7 @@ class Configuration {
     private Configuration() {}
 
     def static final repository = new PlatformRepository()
+    def static final QD_DASHBOARD_URL = "http://quantifieddev.org/app/dashboard.html"
 
     def static setPlatformReadWriteUri(String platformReadWriteUri) {
         println("Initializing Read Write URI.")

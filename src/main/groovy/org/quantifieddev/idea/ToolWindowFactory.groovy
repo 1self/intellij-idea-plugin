@@ -14,16 +14,8 @@ import org.quantifieddev.lang.LanguageDetector
 import org.quantifieddev.utils.DateFormat
 import org.quantifieddev.utils.EventLogger
 
-import javax.swing.JButton
-import javax.swing.JLabel
-import javax.swing.JPanel
-import javax.swing.JToggleButton
-import javax.swing.event.ChangeEvent
-import javax.swing.event.ChangeListener
-import java.awt.Component
-import java.awt.Dimension
-import java.awt.GridBagConstraints
-import java.awt.GridBagLayout
+import javax.swing.*
+import java.awt.*
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.awt.event.ItemEvent
@@ -89,21 +81,21 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         def objectTags = ['Computer', 'Software']
         def properties = ['Environment': 'IntellijIdea12']
 
-        if(languages) {
-          objectTags << 'code'
-          properties << ['Language' : languages]
+        if (languages) {
+            objectTags << 'code'
+            properties << ['Language': languages]
         }
 
         [
-            "dateTime": ['$date' : new DateTime().toString(DateFormat.isoDateTime)],
-            "streamid": settings.streamId,
-            "location": [
-                    "lat":settings.latitude,
-                    "long": settings.longitude
-            ],
-            "objectTags": objectTags,
-            "actionTags": ['wtf'],
-            "properties": properties
+                "dateTime"  : ['$date': new DateTime().toString(DateFormat.isoDateTime)],
+                "streamid"  : settings.streamId,
+                "location"  : [
+                        "lat" : settings.latitude,
+                        "long": settings.longitude
+                ],
+                "objectTags": objectTags,
+                "actionTags": ['wtf'],
+                "properties": properties
         ]
     }
 
@@ -162,8 +154,8 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         qdButton.addActionListener(new ActionListener() {
             @Override
             void actionPerformed(ActionEvent e) {
-                def message = 'To Be Implemented'
-                Messages.showMessageDialog(project, message, "Information", Messages.getInformationIcon())
+                def queryParams = "?streamId=${settings.streamId}&readToken=${settings.readToken}"
+                Desktop.getDesktop().browse(new URL(Configuration.QD_DASHBOARD_URL + queryParams).toURI())
             }
         })
     }
