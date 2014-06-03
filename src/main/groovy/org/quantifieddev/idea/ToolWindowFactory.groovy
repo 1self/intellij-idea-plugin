@@ -2,13 +2,11 @@ package org.quantifieddev.idea
 
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.editor.EditorFactory
-import com.intellij.openapi.editor.event.DocumentAdapter
-import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.vfs.VirtualFile
 import org.joda.time.DateTime
 import org.quantifieddev.Configuration
@@ -17,7 +15,6 @@ import org.quantifieddev.utils.DateFormat
 import org.quantifieddev.utils.EventLogger
 
 import javax.swing.JButton
-import javax.swing.JLabel
 import javax.swing.JPanel
 import java.awt.Component
 import java.awt.Dimension
@@ -28,7 +25,7 @@ import java.awt.event.ActionListener
 
 class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
 
-    private JButton wtfButton, settingsButton
+    private JButton wtfButton, settingsButton, qdButton, helpButton
     private com.intellij.openapi.wm.ToolWindow toolWindow
     private JPanel toolWindowContent
     private BuildSettingsComponent settings
@@ -54,6 +51,22 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         constraints.gridx = 0
         constraints.gridy = 1
         toolWindowContent.add(settingsButton, constraints)
+
+        qdButton = new JButton('QD')
+        constraints = new GridBagConstraints()
+        constraints.anchor = GridBagConstraints.WEST
+        constraints.gridwidth = 1
+        constraints.gridx = 0
+        constraints.gridy = 2
+        toolWindowContent.add(qdButton, constraints)
+
+        helpButton = new JButton('?')
+        constraints = new GridBagConstraints()
+        constraints.anchor = GridBagConstraints.WEST
+        constraints.gridwidth = 1
+        constraints.gridx = 0
+        constraints.gridy = 3
+        toolWindowContent.add(helpButton, constraints)
     }
 
     private Map createWTFEventQD(languages) {
@@ -84,6 +97,27 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         Component component = toolWindow.getComponent()
         setupSettingsButtonListener(project)
         setupWtfButtonListener(project)
+
+        qdButton.addActionListener(new ActionListener() {
+            @Override
+            void actionPerformed(ActionEvent e) {
+                def message = 'To Be Implemented'
+                Messages.showMessageDialog(project, message, "Information", Messages.getInformationIcon())
+            }
+        })
+
+        helpButton.addActionListener(new ActionListener() {
+            @Override
+            void actionPerformed(ActionEvent e) {
+                def message = '''
+                               | Wtf is a way of measuring code quality <link to cartoon>
+                               | Hit the wtf button every time you see something you don't like,
+                               | then review you wtfs over time on your QD dashboard
+                               | for more info see <link to qd>
+                              '''.stripMargin('|')
+                Messages.showMessageDialog(project, message, "Information", Messages.getInformationIcon())
+            }
+        })
         component.getParent().add(toolWindowContent)
     }
 
