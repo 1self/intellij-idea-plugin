@@ -97,15 +97,12 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         Component component = toolWindow.getComponent()
         setupSettingsButtonListener(project)
         setupWtfButtonListener(project)
+        setupQDButtonListener(project)
+        setupHelpButtonListener(project)
+        component.getParent().add(toolWindowContent)
+    }
 
-        qdButton.addActionListener(new ActionListener() {
-            @Override
-            void actionPerformed(ActionEvent e) {
-                def message = 'To Be Implemented'
-                Messages.showMessageDialog(project, message, "Information", Messages.getInformationIcon())
-            }
-        })
-
+    private void setupHelpButtonListener(project) {
         helpButton.addActionListener(new ActionListener() {
             @Override
             void actionPerformed(ActionEvent e) {
@@ -118,7 +115,16 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
                 Messages.showMessageDialog(project, message, "Information", Messages.getInformationIcon())
             }
         })
-        component.getParent().add(toolWindowContent)
+    }
+
+    private void setupQDButtonListener(project) {
+        qdButton.addActionListener(new ActionListener() {
+            @Override
+            void actionPerformed(ActionEvent e) {
+                def message = 'To Be Implemented'
+                Messages.showMessageDialog(project, message, "Information", Messages.getInformationIcon())
+            }
+        })
     }
 
     private void setupWtfButtonListener(Project project) {
