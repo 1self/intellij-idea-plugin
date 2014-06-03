@@ -15,17 +15,25 @@ import org.quantifieddev.utils.DateFormat
 import org.quantifieddev.utils.EventLogger
 
 import javax.swing.JButton
+import javax.swing.JLabel
 import javax.swing.JPanel
+import javax.swing.JToggleButton
+import javax.swing.event.ChangeEvent
+import javax.swing.event.ChangeListener
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
+import java.awt.event.ItemEvent
+import java.awt.event.ItemListener
 
 class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
 
-    private JButton wtfButton, settingsButton, qdButton, helpButton
+    private JButton wtfButton, settingsButton, qdButton
+    private JToggleButton helpToggleButton
+    private JLabel helpLabel
     private com.intellij.openapi.wm.ToolWindow toolWindow
     private JPanel toolWindowContent
     private BuildSettingsComponent settings
@@ -60,13 +68,21 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         constraints.gridy = 2
         toolWindowContent.add(qdButton, constraints)
 
-        helpButton = new JButton('?')
+        helpToggleButton = new JToggleButton('?')
         constraints = new GridBagConstraints()
         constraints.anchor = GridBagConstraints.WEST
         constraints.gridwidth = 1
         constraints.gridx = 0
         constraints.gridy = 3
-        toolWindowContent.add(helpButton, constraints)
+        toolWindowContent.add(helpToggleButton, constraints)
+
+        helpLabel = new JLabel('Some Text to Show /Hide')
+        constraints = new GridBagConstraints()
+        constraints.anchor = GridBagConstraints.WEST
+        constraints.gridwidth = 1
+        constraints.gridx = 1
+        constraints.gridy = 2
+        toolWindowContent.add(helpLabel, constraints)
     }
 
     private Map createWTFEventQD(languages) {
@@ -103,16 +119,41 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
     }
 
     private void setupHelpButtonListener(project) {
-        helpButton.addActionListener(new ActionListener() {
+
+        def message = '''
+                       | Wtf is a way of measuring code quality <link to cartoon>
+                       | Hit the wtf button every time you see something you don't like,
+                       | then review you wtfs over time on your QD dashboard
+                       | for more info see <link to qd>
+                      '''.stripMargin('|')
+        helpLabel.setText(message)
+        //On Press
+        // - ChangeEvent!
+        // - ChangeEvent!
+
+        //On Release
+        // - ChangeEvent!
+        // - ItemEvent!
+        // - ChangeEvent!
+        // - ActionEvent!
+
+        boolean showHelpLabel = false
+        helpToggleButton.addItemListener(new ItemListener() {
             @Override
-            void actionPerformed(ActionEvent e) {
-                def message = '''
-                               | Wtf is a way of measuring code quality <link to cartoon>
-                               | Hit the wtf button every time you see something you don't like,
-                               | then review you wtfs over time on your QD dashboard
-                               | for more info see <link to qd>
-                              '''.stripMargin('|')
-                Messages.showMessageDialog(project, message, "Information", Messages.getInformationIcon())
+            public void itemStateChanged(ItemEvent ev) {
+                int state = ev.getStateChange()
+                if (state == ItemEvent.SELECTED) {
+                    showHelpLabel = true
+                } else {
+                    showHelpLabel = false
+                }
+            }
+        })
+
+        helpToggleButton.addActionListener(new ActionListener() {
+            @Override
+            void actionPerformed(ActionEvent ev) {
+                helpLabel.setVisible(showHelpLabel)
             }
         })
     }
