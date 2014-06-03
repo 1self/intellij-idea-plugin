@@ -43,10 +43,8 @@ public class BuildSettingsComponent implements ApplicationComponent, Configurabl
     }
 
     public void setBuildSettingsData(final String streamId, final String readToken, final String latitude, final String longitude) {
-//        buildSettingsPersister.setPlatformURI(uri)
         buildSettingsPersister.setStreamId(streamId)
         buildSettingsPersister.setReadToken(readToken)
-//        buildSettingsPersister.setWriteToken(writeToken)
         buildSettingsPersister.setLatitude(Double.parseDouble(latitude))
         buildSettingsPersister.setLongitude(Double.parseDouble(longitude))
         buildSettingsPersister.loadState(buildSettingsPersister)

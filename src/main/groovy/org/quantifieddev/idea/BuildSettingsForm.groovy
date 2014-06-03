@@ -48,10 +48,6 @@ class BuildSettingsForm {
         rootComponent = new JPanel()
         rootComponent.setSize(100, 100)
         rootComponent.setLayout(new GridLayout(20, 2))
-//        platformURI = new JLabel("Platform URI")
-//        platformURIText = new JTextField(30)
-//        platformURI.setLabelFor(platformURIText)
-//        platformURIText.setEditable(false)
 
         streamId = new JLabel("StreamId")
         streamIdText = new JTextField(30)
@@ -63,11 +59,6 @@ class BuildSettingsForm {
         readToken.setLabelFor(readTokenText)
         readTokenText.setEditable(false)
 
-//        writeToken = new JLabel("WriteToken")
-//        writeTokenText = new JTextField(30)
-//        writeToken.setLabelFor(writeTokenText)
-//        writeTokenText.setEditable(false)
-
         latitude = new JLabel("Latitude")
         latitudeText = new JTextField(30)
         latitude.setLabelFor(latitudeText)
@@ -76,14 +67,10 @@ class BuildSettingsForm {
         longitudeText = new JTextField(30)
         longitude.setLabelFor(longitudeText)
 
-//        rootComponent.add(platformURI)
-//        rootComponent.add(platformURIText)
         rootComponent.add(streamId)
         rootComponent.add(streamIdText)
         rootComponent.add(readToken)
         rootComponent.add(readTokenText)
-//        rootComponent.add(writeToken)
-//        rootComponent.add(writeTokenText)
         rootComponent.add(latitude)
         rootComponent.add(latitudeText)
         rootComponent.add(longitude)
