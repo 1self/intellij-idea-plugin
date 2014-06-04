@@ -16,6 +16,7 @@ import org.quantifieddev.utils.EventLogger
 import javax.imageio.ImageIO
 import javax.swing.ImageIcon
 import javax.swing.JEditorPane
+import javax.swing.JScrollPane
 import javax.swing.event.HyperlinkEvent
 import javax.swing.event.HyperlinkListener
 import javax.swing.JToolBar
@@ -25,7 +26,6 @@ import javax.swing.JPanel
 import javax.swing.JToggleButton
 import java.awt.Component
 import java.awt.Dimension
-import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
@@ -36,10 +36,9 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
 
     private JButton wtfButton, settingsButton, qdButton
     private JToggleButton helpToggleButton
-    private JEditorPane helpEditorPane
+    private JScrollPane helpEditorScrollPane
     private com.intellij.openapi.wm.ToolWindow toolWindow
     private JPanel toolWindowContent
-    private JPanel toolPanel
     private JPanel contentPanel
     private JToolBar toolBar
     private BuildSettingsComponent settings
@@ -47,7 +46,7 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
     ToolWindowFactory(BuildSettingsComponent settings) {
         this.settings = settings
         toolWindowContent = new JPanel(new BorderLayout())
-
+        toolWindowContent.setMinimumSize(new Dimension(550, 160))
         toolBar = setupToolbar()
         toolWindowContent.add(toolBar, BorderLayout.WEST)
 
@@ -59,8 +58,8 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         wtfButton.setToolTipText("Log WTF!")
         contentPanel.add(wtfButton)
 
-        helpEditorPane = setupHelpPane()
-        contentPanel.add(helpEditorPane)
+        helpEditorScrollPane = setupHelpPane()
+        contentPanel.add(helpEditorScrollPane)
 
         toolWindowContent.add(contentPanel, BorderLayout.CENTER)
     }
@@ -92,24 +91,31 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         toolBar
     }
 
-    private JEditorPane setupHelpPane() {
-        def message = '''
-                       | Wtf is a way of measuring <a href="http://www.quantifieddev.org/images/WTFs_per_minute.gif">code quality</a>.</br>
-                       | Hit the wtf button every time you see something you don't like,
-                       | then review you wtfs over time on your QD dashboard.</br>
-                       | For more info see <a href="http://www.quantifieddev.org">Quantified Dev</a>
-                      '''.stripMargin('|')
+    private JScrollPane setupHelpPane() {
+        def message = """
+                       | This QuantifiedDev plug-in lets you log and compare your software development activity for personal insights. We are currently in beta and are releasing new features all the time.
+                       | <p>
+                       | Current features:
+                       | <ol>
+                       | <li>WTFs - Wtf is a way of <a href='http://www.quantifieddev.org/images/wtfs_per_minute.gif?plugin=intellij'>measuring code quality</a>. Hit the wtf button every time you see something you don't like or find confusing, then review you wtfs over time on <a href='http://www.quantifieddev.org/app/dashboard.html?plugin=intellij&type=wtf&streamId=${settings.streamId}&readToken=${settings.readToken}'>your QD dashboard</a>.
+                       | </li>
+                       | <li>Builds - The plug-in logs when you start and complete builds and whether the build succeeded or failed. You can see your build behaviour over time on <a href='http://www.quantifieddev.org/app/dashboard.html?plugin=intellij&type=build&streamId=${settings.streamId}&readToken=${settings.readToken}'>your QD dashboard</a>.
+                       | </li>
+                       | <li>Community - The plug-in senses your location from your IP address and attaches this information to your logged events. This means that you can <a href='http://www.quantifieddev.org/app/community.html?plugin=intellij'>see yourself and your community of developers logging builds and WTFs around the world in real time</a>.
+                       | </li>
+                       | </ol>
+                       | </p>
+                       | For more info see <a href='http://www.quantifieddev.org/?plugin=intellij'>QuantifiedDev.org</a>
+                      """.stripMargin('|')
 
-        helpEditorPane = new JEditorPane()
+        JEditorPane helpEditorPane = new JEditorPane()
         helpEditorPane.setCursor(new Cursor(Cursor.HAND_CURSOR))
         final Font currFont = helpEditorPane.getFont()
         helpEditorPane.setFont(new Font('Courier New', currFont.getStyle(), currFont.getSize()))
         helpEditorPane.setContentType('text/html')
         helpEditorPane.setText(message)
         helpEditorPane.setEditable(false)
-        helpEditorPane.setPreferredSize(new Dimension(500, 100))
         helpEditorPane.setOpaque(false)
-        helpEditorPane.setVisible(false)
 
         helpEditorPane.addHyperlinkListener(new HyperlinkListener() {
             @Override
@@ -124,7 +130,10 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
                 }
             }
         })
-        helpEditorPane
+        JScrollPane helpEditorScrollPane = new JScrollPane(helpEditorPane)
+        helpEditorScrollPane.setVisible(false)
+        helpEditorScrollPane.setPreferredSize(new Dimension(500, 150))
+        helpEditorScrollPane
     }
 
     private Map createWTFEventQD(languages) {
@@ -172,15 +181,15 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         // - ChangeEvent!
         // - ActionEvent!
 
-        boolean showHelpEditorPane = false
+        boolean showHelp = false
         helpToggleButton.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent ev) {
                 int state = ev.getStateChange()
                 if (state == ItemEvent.SELECTED) {
-                    showHelpEditorPane = true
+                    showHelp = true
                 } else {
-                    showHelpEditorPane = false
+                    showHelp = false
                 }
             }
         })
@@ -188,8 +197,10 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         helpToggleButton.addActionListener(new ActionListener() {
             @Override
             void actionPerformed(ActionEvent ev) {
-                helpEditorPane.setVisible(showHelpEditorPane)
-                wtfButton.setVisible(!showHelpEditorPane)
+                //helpEditorScrollPane.setVisible(showHelp)
+//                helpEditorPane.setVisible(showHelp)
+                helpEditorScrollPane.setVisible(showHelp)
+                wtfButton.setVisible(!showHelp)
             }
         })
     }
