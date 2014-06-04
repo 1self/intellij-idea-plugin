@@ -13,10 +13,14 @@ import org.quantifieddev.lang.LanguageDetector
 import org.quantifieddev.utils.DateFormat
 import org.quantifieddev.utils.EventLogger
 
+import javax.swing.JEditorPane
+import javax.swing.event.HyperlinkEvent
+import javax.swing.event.HyperlinkListener
+import javax.swing.text.html.HTMLDocument
+import javax.swing.text.html.HTMLEditorKit
 import java.awt.*
 import javax.swing.JButton
 import javax.swing.JPanel
-import javax.swing.JTextArea
 import javax.swing.JToggleButton
 import java.awt.Component
 import java.awt.Dimension
@@ -31,7 +35,7 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
 
     private JButton wtfButton, settingsButton, qdButton
     private JToggleButton helpToggleButton
-    private JTextArea helpTextArea
+    private JEditorPane helpEditorPane
     private com.intellij.openapi.wm.ToolWindow toolWindow
     private JPanel toolWindowContent
     private BuildSettingsComponent settings
@@ -74,21 +78,49 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         constraints.gridy = 3
         toolWindowContent.add(helpToggleButton, constraints)
 
-        def message = '''
-                       | Wtf is a way of measuring code quality <link to cartoon>
-                       | Hit the wtf button every time you see something you don't like,
-                       | then review you wtfs over time on your QD dashboard
-                       | for more info see <link to qd>
-                      '''.stripMargin('|')
 
-        helpTextArea = new JTextArea(message)
-        helpTextArea.setVisible(false)
+        helpEditorPane = setupHelpPane()
         constraints = new GridBagConstraints()
         constraints.anchor = GridBagConstraints.WEST
         constraints.gridwidth = 1
         constraints.gridx = 1
         constraints.gridy = 2
-        toolWindowContent.add(helpTextArea, constraints)
+        toolWindowContent.add(helpEditorPane, constraints)
+    }
+
+    private JEditorPane setupHelpPane() {
+        def message = '''
+                       | Wtf is a way of measuring <a href="http://www.quantifieddev.org/images/wtf.png">code quality</a>.</br>
+                       | Hit the wtf button every time you see something you don't like,
+                       | then review you wtfs over time on your QD dashboard.</br>
+                       | For more info see <a href="http://www.quantifieddev.org">Quantified Dev</a>
+                      '''.stripMargin('|')
+
+        helpEditorPane = new JEditorPane()
+        helpEditorPane.setCursor(new Cursor(Cursor.HAND_CURSOR))
+        final Font currFont = helpEditorPane.getFont()
+        helpEditorPane.setFont(new Font('Courier New', currFont.getStyle(), currFont.getSize()))
+        helpEditorPane.setContentType('text/html')
+        helpEditorPane.setText(message)
+        helpEditorPane.setEditable(false)
+        helpEditorPane.setPreferredSize(new Dimension(500, 100))
+        helpEditorPane.setOpaque(false)
+        helpEditorPane.setVisible(false)
+
+        helpEditorPane.addHyperlinkListener(new HyperlinkListener() {
+            @Override
+            public void hyperlinkUpdate(HyperlinkEvent e) {
+                if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                    Desktop desktop = Desktop.getDesktop()
+                    try {
+                        desktop.browse(e.getURL().toURI())
+                    } catch (Exception ex) {
+                        EventLogger.logError('Problem', ex.message)
+                    }
+                }
+            }
+        })
+        helpEditorPane
     }
 
     private Map createWTFEventQD(languages) {
@@ -136,15 +168,15 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         // - ChangeEvent!
         // - ActionEvent!
 
-        boolean showHelpTextArea = false
+        boolean showHelpEditorPane = false
         helpToggleButton.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent ev) {
                 int state = ev.getStateChange()
                 if (state == ItemEvent.SELECTED) {
-                    showHelpTextArea = true
+                    showHelpEditorPane = true
                 } else {
-                    showHelpTextArea = false
+                    showHelpEditorPane = false
                 }
             }
         })
@@ -152,8 +184,8 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         helpToggleButton.addActionListener(new ActionListener() {
             @Override
             void actionPerformed(ActionEvent ev) {
-                helpTextArea.setVisible(showHelpTextArea)
-                wtfButton.setVisible(!showHelpTextArea)
+                helpEditorPane.setVisible(showHelpEditorPane)
+                wtfButton.setVisible(!showHelpEditorPane)
             }
         })
     }
