@@ -13,11 +13,12 @@ import org.quantifieddev.lang.LanguageDetector
 import org.quantifieddev.utils.DateFormat
 import org.quantifieddev.utils.EventLogger
 
+import javax.imageio.ImageIO
+import javax.swing.ImageIcon
 import javax.swing.JEditorPane
 import javax.swing.event.HyperlinkEvent
 import javax.swing.event.HyperlinkListener
-import javax.swing.text.html.HTMLDocument
-import javax.swing.text.html.HTMLEditorKit
+import javax.swing.JToolBar
 import java.awt.*
 import javax.swing.JButton
 import javax.swing.JPanel
@@ -38,59 +39,62 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
     private JEditorPane helpEditorPane
     private com.intellij.openapi.wm.ToolWindow toolWindow
     private JPanel toolWindowContent
+    private JPanel toolPanel
+    private JPanel contentPanel
+    private JToolBar toolBar
     private BuildSettingsComponent settings
 
     ToolWindowFactory(BuildSettingsComponent settings) {
         this.settings = settings
-        toolWindowContent = new JPanel()
-        toolWindowContent.setLayout(new GridBagLayout())
-        toolWindowContent.setPreferredSize(new Dimension(5, 5))
-        GridBagConstraints constraints = new GridBagConstraints()
-        constraints.anchor = GridBagConstraints.WEST
-        constraints.gridwidth = 1
-        constraints.gridx = 1
-        constraints.gridy = 1
-        wtfButton = new JButton('WTF?!')
-        wtfButton.setSize(5, 5)
-        toolWindowContent.add(wtfButton, constraints)
+        toolWindowContent = new JPanel(new BorderLayout())
 
-        settingsButton = new JButton('S')
-        constraints = new GridBagConstraints()
-        constraints.anchor = GridBagConstraints.WEST
-        constraints.gridwidth = 1
-        constraints.gridx = 0
-        constraints.gridy = 1
-        toolWindowContent.add(settingsButton, constraints)
+        toolBar = setupToolbar()
+        toolWindowContent.add(toolBar, BorderLayout.WEST)
 
-        qdButton = new JButton('QD')
-        constraints = new GridBagConstraints()
-        constraints.anchor = GridBagConstraints.WEST
-        constraints.gridwidth = 1
-        constraints.gridx = 0
-        constraints.gridy = 2
-        toolWindowContent.add(qdButton, constraints)
+        contentPanel = new JPanel(new GridBagLayout())
 
-        helpToggleButton = new JToggleButton('?')
-        constraints = new GridBagConstraints()
-        constraints.anchor = GridBagConstraints.WEST
-        constraints.gridwidth = 1
-        constraints.gridx = 0
-        constraints.gridy = 3
-        toolWindowContent.add(helpToggleButton, constraints)
-
+        wtfButton = new JButton()
+        Image wtfImage= ImageIO.read(getClass().getResource('/wtf_icon75x45.jpg'))
+        wtfButton.setIcon(new ImageIcon(wtfImage))
+        wtfButton.setToolTipText("Log WTF!")
+        contentPanel.add(wtfButton)
 
         helpEditorPane = setupHelpPane()
-        constraints = new GridBagConstraints()
-        constraints.anchor = GridBagConstraints.WEST
-        constraints.gridwidth = 1
-        constraints.gridx = 1
-        constraints.gridy = 2
-        toolWindowContent.add(helpEditorPane, constraints)
+        contentPanel.add(helpEditorPane)
+
+        toolWindowContent.add(contentPanel, BorderLayout.CENTER)
+    }
+
+    private JToolBar setupToolbar() {
+        toolBar = new JToolBar(JToolBar.VERTICAL)
+        toolBar.setFloatable(false)
+
+        settingsButton = new JButton()
+        Image settingsImage= ImageIO.read(getClass().getResource('/settings_24x24.png'))
+        settingsButton.setMargin(new Insets(0, 0, 0, 0))
+        settingsButton.setIcon(new ImageIcon(settingsImage))
+        settingsButton.setToolTipText("Edit/View QD Settings")
+        toolBar.add(settingsButton)
+
+        qdButton = new JButton()
+        Image qdImage= ImageIO.read(getClass().getResource('/QDLogo_24x24.png'))
+        qdButton.setMargin(new Insets(0, 0, 0, 0))
+        qdButton.setIcon(new ImageIcon(qdImage))
+        qdButton.setToolTipText("View my QD dashboard in browser")
+        toolBar.add(qdButton)
+
+        helpToggleButton = new JToggleButton()
+        Image helpImage= ImageIO.read(getClass().getResource('/help_24x24.png'))
+        helpToggleButton.setMargin(new Insets(0, 0, 0, 0))
+        helpToggleButton.setIcon(new ImageIcon(helpImage))
+        helpToggleButton.setToolTipText("About WTF")
+        toolBar.add(helpToggleButton)
+        toolBar
     }
 
     private JEditorPane setupHelpPane() {
         def message = '''
-                       | Wtf is a way of measuring <a href="http://www.quantifieddev.org/images/wtf.png">code quality</a>.</br>
+                       | Wtf is a way of measuring <a href="http://www.quantifieddev.org/images/WTFs_per_minute.gif">code quality</a>.</br>
                        | Hit the wtf button every time you see something you don't like,
                        | then review you wtfs over time on your QD dashboard.</br>
                        | For more info see <a href="http://www.quantifieddev.org">Quantified Dev</a>
