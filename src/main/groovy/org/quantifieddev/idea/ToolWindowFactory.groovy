@@ -49,15 +49,15 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         wtfButton.setToolTipText("Log WTF!")
         contentPanel.add(wtfButton)
 
-        hadCoffeeButton = new JButton('Had Coffee')
-//        Image wtfImage = ImageIO.read(getClass().getResource('/wtf_icon75x45.jpg'))
-//        hadCoffeeButton.setIcon(new ImageIcon(wtfImage))
+        hadCoffeeButton = new JButton()
+        Image hadCoffeeImage = ImageIO.read(getClass().getResource('/coffee_icon32x32.png'))
+        hadCoffeeButton.setIcon(new ImageIcon(hadCoffeeImage))
         hadCoffeeButton.setToolTipText('Had Coffee')
         contentPanel.add(hadCoffeeButton)
 
-        drankWaterButton = new JButton('Drank Water')
-//        Image wtfImage = ImageIO.read(getClass().getResource('/wtf_icon75x45.jpg'))
-//        hadCoffeeButton.setIcon(new ImageIcon(wtfImage))
+        drankWaterButton = new JButton()
+        Image drankWaterImage = ImageIO.read(getClass().getResource('/water_icon9x32.png'))
+        drankWaterButton.setIcon(new ImageIcon(drankWaterImage))
         drankWaterButton.setToolTipText('Drank Water')
         contentPanel.add(drankWaterButton)
 
