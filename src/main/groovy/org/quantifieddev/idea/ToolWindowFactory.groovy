@@ -163,47 +163,35 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         ]
     }
 
-    private Map createDrankWaterEventQD(languages = []) {
-        def objectTags = ['Computer', 'Software']
-        def properties = ['Environment': 'IntellijIdea12']
-
-        if (languages) {
-            objectTags << 'code'
-            properties << ['Language': languages]
-        }
-
+    private Map createDrankWaterEventQD(String version, String volume = '250ml') {
         [
-                "dateTime"  : ['$date': new DateTime().toString(DateFormat.isoDateTime)],
-                "streamid"  : settings.streamId,
-                "location"  : [
-                        "lat" : settings.latitude,
-                        "long": settings.longitude
-                ],
-                "objectTags": objectTags,
-                "actionTags": ['water'],
-                "properties": properties
+            "dateTime"  : ['$date': new DateTime().toString(DateFormat.isoDateTime)],
+            "streamid"  : settings.streamId,
+            "location"  : [
+                "lat" : settings.latitude,
+                "long": settings.longitude
+            ],
+               "source" : 'Intellij Idea Plugin',
+              "version" : version,
+            "objectTags": ['Drink', 'Water'],
+            "actionTags": ['drink'],
+            "properties": ['Environment': 'IntellijIdea12', 'Volume': volume]
         ]
     }
 
-    private Map createHadCoffeeEventQD(languages = []) {
-        def objectTags = ['Computer', 'Software']
-        def properties = ['Environment': 'IntellijIdea12']
-
-        if (languages) {
-            objectTags << 'code'
-            properties << ['Language': languages]
-        }
-
+    private Map createHadCoffeeEventQD(String version) {
         [
-                "dateTime"  : ['$date': new DateTime().toString(DateFormat.isoDateTime)],
-                "streamid"  : settings.streamId,
-                "location"  : [
-                        "lat" : settings.latitude,
-                        "long": settings.longitude
-                ],
-                "objectTags": objectTags,
-                "actionTags": ['coffee'],
-                "properties": properties
+            "dateTime"  : ['$date': new DateTime().toString(DateFormat.isoDateTime)],
+            "streamid"  : settings.streamId,
+            "location"  : [
+                    "lat" : settings.latitude,
+                    "long": settings.longitude
+            ],
+            "source" : 'Intellij Idea Plugin',
+            "version" : version,
+            "objectTags": ['Drink', 'Coffee'],
+            "actionTags": ['drink'],
+            "properties": ['Environment': 'IntellijIdea12']
         ]
     }
 
