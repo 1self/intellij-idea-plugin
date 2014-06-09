@@ -25,7 +25,9 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
     private final languages
     private final long timeToDetectProjectLanguages
     private final long totalFilesScanned
-    private final Pattern regex = Pattern.compile(LanguageDetector.languageFileExtensions.values().flatten().collect { "(.*\\$it)" }.join('|'))
+    private final Pattern regex = Pattern.compile(LanguageDetector.languageFileExtensions.values().flatten().collect {
+        "(.*\\$it)"
+    }.join('|'))
 
     public BuildStatusComponent(Project project, BuildSettingsComponent settings) {
         this.project = project
@@ -58,7 +60,9 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
     @Override
     void compilationFinished(boolean aborted, int errors, int warnings, final CompileContext compileContext) {
         try {
-            def finishEvent = createBuildFinishEventQD(getCompilationStatus(aborted, errors), new DateTime().toString(isoDateTimeFormat))
+            def buildDuration = DateTime.now().millis - compileContext.properties.startCompilationStamp
+            def buildFinishTime = new DateTime().toString(isoDateTimeFormat)
+            def finishEvent = createBuildFinishEventQD(getCompilationStatus(aborted, errors), buildFinishTime, buildDuration)
             persist(finishEvent)
         }
         catch (Exception e) {
@@ -70,7 +74,6 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
     @Override
     void fileGenerated(String s, String s1) {
     }
-
 
     private String getCompilationStatus(aborted, errors) {
         if (errors > 0) {
@@ -118,23 +121,28 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
     //todo: when should a property be upgraded to a object tag or vice versa?
     private def createBuildStartEventQD(startedOn) {
         [
-            'dateTime': startedOn,
-            'streamid': settings.streamId,
-            'location': ['lat': settings.latitude, 'long': settings.longitude],
-            'objectTags': ['Computer', 'Software'],
-            'actionTags': ['Build', 'Start'],
-            'properties': ['Language': languages, 'Environment': 'IntellijIdea12', 'TimeToDetectProjectLanguages': timeToDetectProjectLanguages, 'TotalFilesScanned': totalFilesScanned]
+                'dateTime'  : startedOn,
+                'streamid'  : settings.streamId,
+                'location'  : ['lat': settings.latitude, 'long': settings.longitude],
+                'objectTags': ['Computer', 'Software'],
+                'actionTags': ['Build', 'Start'],
+                'properties': ['Language'                    : languages, 'Environment': 'IntellijIdea12',
+                               'TimeToDetectProjectLanguages': timeToDetectProjectLanguages,
+                               'TotalFilesScanned'           : totalFilesScanned]
         ]
     }
 
-    private def createBuildFinishEventQD(compilationStatus, finishedOn) {
+    private def createBuildFinishEventQD(compilationStatus, finishedOn, buildDuration) {
         [
-            'dateTime': finishedOn,
-            'streamid': settings.streamId,
-            'location': ['lat': settings.latitude, 'long': settings.longitude],
-            'objectTags': ['Computer', 'Software'],
-            'actionTags': ['Build', 'Finish'],
-            'properties': ['Result': compilationStatus, 'Language': languages, 'Environment': 'IntellijIdea12', 'TimeToDetectProjectLanguages': timeToDetectProjectLanguages, 'TotalFilesScanned': totalFilesScanned]
+                'dateTime'  : finishedOn,
+                'streamid'  : settings.streamId,
+                'location'  : ['lat': settings.latitude, 'long': settings.longitude],
+                'objectTags': ['Computer', 'Software'],
+                'actionTags': ['Build', 'Finish'],
+                'properties': ['Result'                      : compilationStatus, 'Language': languages, 'Environment': 'IntellijIdea12',
+                               'TimeToDetectProjectLanguages': timeToDetectProjectLanguages,
+                               'TotalFilesScanned'           : totalFilesScanned,
+                               'BuildDuration'               : buildDuration]
         ]
     }
 
