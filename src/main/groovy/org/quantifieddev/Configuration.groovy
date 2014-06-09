@@ -3,7 +3,11 @@ package org.quantifieddev
 import org.quantifieddev.repository.PlatformRepository
 
 class Configuration {
-    private Configuration() {}
+
+    private Configuration() {
+    }
+
+    static final ConfigObject appConfig = new ConfigSlurper('configuration').parse(AppConfig.class).configuration
 
     def static final repository = new PlatformRepository()
     def static final QD_DASHBOARD_URL = "http://quantifieddev.org/app/dashboard.html"

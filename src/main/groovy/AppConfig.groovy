@@ -45,7 +45,7 @@ configuration {
 		name = 'quantifiedDevIdeaPlugin'
 
 		vendor {
-			name = 'quantifiedDevIdeaPlugin'
+			name = 'QuantifiedDev.org'
 		}
         //JBoss Versioning Convention
 		version {

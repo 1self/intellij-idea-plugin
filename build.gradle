@@ -9,7 +9,7 @@ targetCompatibility = '1.6'
 defaultTasks 'clean', 'build', 'distribute'
 
 ext {
-    appConfigUrl = new URL("file:///${projectDir}/AppConfig.groovy")
+    appConfigUrl = new URL("file:///${projectDir}/src/main/groovy/AppConfig.groovy")
     appConfig = new ConfigSlurper('configuration').parse(appConfigUrl).configuration
     manifest = appConfig.product.distribution.jar.manifest.details
     project.archivesBaseName = appConfig.product.distribution.name

@@ -100,7 +100,7 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         def message = """
                        | This QuantifiedDev plug-in lets you log and compare your software development activity for personal insights. We are currently in beta and are releasing new features all the time.
                        | <p>
-                       | Current features:
+                       | Current features (ver $Configuration.appConfig.product.version.complete):
                        | <ol>
                        | <li>WTFs - Wtf is a way of <a href='http://www.quantifieddev.org/images/wtfs_per_minute.gif?plugin=intellij'>measuring code quality</a>. Hit the wtf button every time you see something you don't like or find confusing, then review you wtfs over time on <a href='http://www.quantifieddev.org/app/dashboard.html?plugin=intellij&type=wtf&streamId=$encodedStreamId&readToken=$encodedReadToken'>your QD dashboard</a>.
                        | </li>
@@ -157,13 +157,14 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
                         "lat" : settings.latitude,
                         "long": settings.longitude
                 ],
+                "version" : Configuration.appConfig.product.version.complete,
                 "objectTags": objectTags,
                 "actionTags": ['wtf'],
                 "properties": properties
         ]
     }
 
-    private Map createDrankWaterEventQD(String version, String volume = '250ml') {
+    private Map createDrankWaterEventQD(String volume = '250ml') {
         [
             "dateTime"  : ['$date': new DateTime().toString(DateFormat.isoDateTime)],
             "streamid"  : settings.streamId,
@@ -172,14 +173,14 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
                 "long": settings.longitude
             ],
                "source" : 'Intellij Idea Plugin',
-              "version" : version,
+              "version" : Configuration.appConfig.product.version.complete,
             "objectTags": ['Drink', 'Water'],
             "actionTags": ['drink'],
             "properties": ['Environment': 'IntellijIdea12', 'Volume': volume]
         ]
     }
 
-    private Map createHadCoffeeEventQD(String version) {
+    private Map createHadCoffeeEventQD() {
         [
             "dateTime"  : ['$date': new DateTime().toString(DateFormat.isoDateTime)],
             "streamid"  : settings.streamId,
@@ -188,7 +189,7 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
                     "long": settings.longitude
             ],
             "source" : 'Intellij Idea Plugin',
-            "version" : version,
+            "version" : Configuration.appConfig.product.version.complete,
             "objectTags": ['Drink', 'Coffee'],
             "actionTags": ['drink'],
             "properties": ['Environment': 'IntellijIdea12']
@@ -304,6 +305,6 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
     private def persist(Map event) {
         def writeToken = settings.writeToken
         Configuration.repository.insert(event, writeToken)
-        EventLogger.logSuccess("Successfully Persisted", "$event")
+        EventLogger.logSuccess("Successfully sent to quantifieddev.org", "$event")
     }
 }
