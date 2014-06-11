@@ -26,7 +26,7 @@ import java.awt.event.ItemListener
 class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
 
     private JButton wtfButton, settingsButton, qdButton, hadCoffeeButton, drankWaterButton
-    private JToggleButton helpToggleButton
+    private JToggleButton helpToggleButton, notificationToggleButton
     private JScrollPane helpEditorScrollPane
     private com.intellij.openapi.wm.ToolWindow toolWindow
     private JPanel toolWindowContent
@@ -91,6 +91,14 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         helpToggleButton.setIcon(new ImageIcon(helpImage))
         helpToggleButton.setToolTipText("About WTF")
         toolBar.add(helpToggleButton)
+
+        notificationToggleButton = new JToggleButton()
+        Image notificationImage = ImageIO.read(getClass().getResource('/announcements_icon24x24.png'))
+        notificationToggleButton.setMargin(new Insets(0, 0, 0, 0))
+        notificationToggleButton.setIcon(new ImageIcon(notificationImage))
+        notificationToggleButton.setToolTipText("Turn Off Notifications")
+        toolBar.add(notificationToggleButton)
+
         toolBar
     }
 
@@ -204,6 +212,7 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         setupWtfButtonListener(project)
         setupQDButtonListener(project)
         setupHelpButtonListener(project)
+        setupNotificationButtonListener(project)
         setupDrankWaterButtonListener(project)
         setupHadCoffeeButtonListener(project)
         component.getParent().add(toolWindowContent)
@@ -228,6 +237,22 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
             }
         })
     }
+
+    private void setupNotificationButtonListener(project) {
+        notificationToggleButton.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent ev) {
+                int state = ev.getStateChange()
+                if (state == ItemEvent.SELECTED) {
+                    EventLogger.canLog = true
+                    EventLogger.logSuccess('Quantified Dev - Notifications', 'Turned On')
+                } else {
+                    EventLogger.canLog = false
+                }
+            }
+        })
+    }
+
 
     private void setupHelpButtonListener(project) {
         boolean showHelp = false
