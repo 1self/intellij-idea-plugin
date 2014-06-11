@@ -42,7 +42,7 @@ def toCompleteVersion() {
 
 configuration {
 	product {
-		name = 'quantifiedDevIdeaPlugin'
+		name = 'quantifieddev-idea-plugin'
 
 		vendor {
 			name = 'QuantifiedDev.org'
@@ -53,7 +53,7 @@ configuration {
 			minor = 11 //changes or feature additions
 			micro = 3  //patches and bug fixes
 			qualifier {
-				alphaNumeric = 'Beta1' //Alpha# or Beta# or CR# or GA, or SP#
+				alphaNumeric = 'beta1' //Alpha# or Beta# or CR# or GA, or SP#
 			}
             previous = 'None'
 			complete = toCompleteVersion()
