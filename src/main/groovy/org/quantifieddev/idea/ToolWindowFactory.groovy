@@ -103,8 +103,8 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
     }
 
     private JScrollPane setupHelpPane() {
-        def encodedStreamId = URLEncoder.encode(settings.streamId, "UTF-8")
-        def encodedReadToken = URLEncoder.encode(settings.readToken, "UTF-8")
+        def encodedStreamId = settings.streamId ? URLEncoder.encode(settings.streamId, "UTF-8") : settings.streamId
+        def encodedReadToken = settings.readToken ? URLEncoder.encode(settings.readToken, "UTF-8") : settings.readToken
         def message = """
                        | This QuantifiedDev plug-in lets you log and compare your software development activity for personal insights. We are currently in beta and are releasing new features all the time.
                        | <p>
@@ -165,7 +165,7 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
                         "lat" : settings.latitude,
                         "long": settings.longitude
                 ],
-                "version" : Configuration.appConfig.product.version.complete,
+                "version"   : Configuration.appConfig.product.version.complete,
                 "objectTags": objectTags,
                 "actionTags": ['wtf'],
                 "properties": properties
@@ -174,33 +174,33 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
 
     private Map createDrankWaterEventQD(String volume = '250ml') {
         [
-            "dateTime"  : ['$date': new DateTime().toString(DateFormat.isoDateTime)],
-            "streamid"  : settings.streamId,
-            "location"  : [
-                "lat" : settings.latitude,
-                "long": settings.longitude
-            ],
-               "source" : 'Intellij Idea Plugin',
-              "version" : Configuration.appConfig.product.version.complete,
-            "objectTags": ['Drink', 'Water'],
-            "actionTags": ['drink'],
-            "properties": ['Environment': 'IntellijIdea12', 'Volume': volume]
+                "dateTime"  : ['$date': new DateTime().toString(DateFormat.isoDateTime)],
+                "streamid"  : settings.streamId,
+                "location"  : [
+                        "lat" : settings.latitude,
+                        "long": settings.longitude
+                ],
+                "source"    : 'Intellij Idea Plugin',
+                "version"   : Configuration.appConfig.product.version.complete,
+                "objectTags": ['Drink', 'Water'],
+                "actionTags": ['drink'],
+                "properties": ['Environment': 'IntellijIdea12', 'Volume': volume]
         ]
     }
 
     private Map createHadCoffeeEventQD() {
         [
-            "dateTime"  : ['$date': new DateTime().toString(DateFormat.isoDateTime)],
-            "streamid"  : settings.streamId,
-            "location"  : [
-                    "lat" : settings.latitude,
-                    "long": settings.longitude
-            ],
-            "source" : 'Intellij Idea Plugin',
-            "version" : Configuration.appConfig.product.version.complete,
-            "objectTags": ['Drink', 'Coffee'],
-            "actionTags": ['drink'],
-            "properties": ['Environment': 'IntellijIdea12']
+                "dateTime"  : ['$date': new DateTime().toString(DateFormat.isoDateTime)],
+                "streamid"  : settings.streamId,
+                "location"  : [
+                        "lat" : settings.latitude,
+                        "long": settings.longitude
+                ],
+                "source"    : 'Intellij Idea Plugin',
+                "version"   : Configuration.appConfig.product.version.complete,
+                "objectTags": ['Drink', 'Coffee'],
+                "actionTags": ['drink'],
+                "properties": ['Environment': 'IntellijIdea12']
         ]
     }
 
@@ -283,8 +283,8 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         qdButton.addActionListener(new ActionListener() {
             @Override
             void actionPerformed(ActionEvent e) {
-                def encodedStreamId = URLEncoder.encode(settings.streamId, "UTF-8")
-                def encodedReadToken = URLEncoder.encode(settings.readToken, "UTF-8")
+                def encodedStreamId = settings.streamId ? URLEncoder.encode(settings.streamId, "UTF-8") : settings.streamId
+                def encodedReadToken = settings.readToken ? URLEncoder.encode(settings.readToken, "UTF-8") : settings.readToken
                 def queryParams = "?streamId=$encodedStreamId&readToken=$encodedReadToken"
                 Desktop.getDesktop().browse(new URL(Configuration.QD_DASHBOARD_URL + queryParams).toURI())
             }
