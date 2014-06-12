@@ -17,11 +17,8 @@ ext {
     projectLibs = "${projectDir}/libs"
 
     //common libs
-    groovy = 'org.codehaus.groovy:groovy-all:1.8.8'
     httpBuilder = 'org.codehaus.groovy.modules.http-builder:http-builder:0.6'
     jodaTime = 'joda-time:joda-time:2.3'
-    cgLib = 'cglib:cglib-nodep:3.1'
-    jacksonJaxRSProvider = 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.2.3'
 
     //common test libs
     junit = 'junit:junit:4.8.1'
@@ -33,9 +30,8 @@ ext {
 sourceSets.main.java.srcDirs = ['src/main/java', 'src/main/groovy']
 
 dependencies {
-    compile(project.ext.groovy, project.ext.jodaTime,
-            project.ext.httpBuilder, project.ext.cgLib,
-            project.ext.jacksonJaxRSProvider)
+    compile(project.ext.jodaTime,
+            project.ext.httpBuilder)
     testCompile(project.ext.junit, project.ext.mockito, project.ext.spock)
     compile fileTree(dir:project.ext.projectLibs, include:'**/*.jar')
 }
