@@ -27,6 +27,8 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
 
     private JButton wtfButton, settingsButton, qdButton, hadCoffeeButton, drankWaterButton
     private JToggleButton helpToggleButton, notificationToggleButton
+    private Image disabledNotificationImage = ImageIO.read(getClass().getResource('/announcements_grey_icon24x24.png'))
+    private Image enabledNotificationImage = ImageIO.read(getClass().getResource('/announcements_blue_icon24x24.png'))
     private JScrollPane helpEditorScrollPane
     private com.intellij.openapi.wm.ToolWindow toolWindow
     private JPanel toolWindowContent
@@ -93,10 +95,9 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         toolBar.add(helpToggleButton)
 
         notificationToggleButton = new JToggleButton()
-        Image notificationImage = ImageIO.read(getClass().getResource('/announcements_icon24x24.png'))
         notificationToggleButton.setMargin(new Insets(0, 0, 0, 0))
-        notificationToggleButton.setIcon(new ImageIcon(notificationImage))
-        notificationToggleButton.setToolTipText("Turn Off Notifications")
+        notificationToggleButton.setIcon(new ImageIcon(disabledNotificationImage))
+        notificationToggleButton.setToolTipText("Turn Notifications ON")
         toolBar.add(notificationToggleButton)
 
         toolBar
@@ -239,6 +240,7 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
     }
 
     private void setupNotificationButtonListener(project) {
+        String toolTipText = "Turn Notifications "
         notificationToggleButton.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent ev) {
@@ -246,8 +248,12 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
                 if (state == ItemEvent.SELECTED) {
                     EventLogger.canLog = true
                     EventLogger.logSuccess('Quantified Dev - Notifications', 'Turned On')
+                    notificationToggleButton.setIcon(new ImageIcon(enabledNotificationImage))
+                    notificationToggleButton.setToolTipText(toolTipText + 'OFF')
                 } else {
                     EventLogger.canLog = false
+                    notificationToggleButton.setIcon(new ImageIcon(disabledNotificationImage))
+                    notificationToggleButton.setToolTipText(toolTipText + 'ON')
                 }
             }
         })
