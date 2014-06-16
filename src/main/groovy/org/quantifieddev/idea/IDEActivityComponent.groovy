@@ -18,14 +18,14 @@ class IDEActivityComponent implements ProjectComponent, AWTEventListener {
     private boolean sleeping = false
     private boolean disposed = false
     private boolean isUserActive = false
-    private final def sleepForTime = 5 * 1000
-    private final def detectActivityForTime = 2 * 1000
+    private final def sleepForTime = 5 * 60 * 1000
+    private final def detectActivityForTime = 2 * 60 * 1000
 
 
     // +---------+       +--------+      +--------+
     //           |       |        |      |
     //           | AWAKE |        |      |  SLEEP
-    //           |       |        |      |
+    //           | 2 min |        |      |  5 min
     //           +-------+        +------+
 
     public IDEActivityComponent(Project project, BuildSettingsComponent settings) {
@@ -59,9 +59,9 @@ class IDEActivityComponent implements ProjectComponent, AWTEventListener {
                 ],
                 "source"    : 'Intellij Idea Plugin',
                 "version"   : Configuration.appConfig.product.version.complete,
-                "objectTags": [],  //??
-                "actionTags": [],            //??
-                "properties": ['Environment': 'IntellijIdea12', 'isUserActive' : isUserActive, 'timeDurationInMillis': timeDurationInMillis]
+                "objectTags": ['Computer', 'Software'],  //??
+                "actionTags": ['Develop'],            //??
+                "properties": ['Environment': 'IntellijIdea12', 'isUserActive' : isUserActive, 'duration': timeDurationInMillis]
         ]
     }
 
@@ -99,7 +99,7 @@ class IDEActivityComponent implements ProjectComponent, AWTEventListener {
     void eventDispatched(AWTEvent event) {
         def eventId = event.getID()
         switch (eventId) {
-            //case MouseEvent.MOUSE_MOVED:
+            case MouseEvent.MOUSE_MOVED:
             case MouseEvent.MOUSE_CLICKED:
             //TODO: Key press for Enter, Backspace, Tab
             case KeyEvent.KEY_PRESSED:
