@@ -21,22 +21,6 @@ class IDEActivityComponent implements ProjectComponent, AWTEventListener {
     private long inactiveSessionStartTime = System.currentTimeMillis()
     private long inactiveSessionEndTime = inactiveSessionStartTime
 
-    // +-----+          +-----+         +-----+       AWAKE
-    //       |          |     |         |
-    //       | SLEEP    |AWAKE|         |
-    //       | 5 min    |2 min|         |
-    //       +----------+     +---------+             SLEEP
-    //                        ^
-    //                        |
-    //                        |
-    //                Log Activity Here
-
-    //  +---------+          +---------+         +---------+
-    //            |          |         |         |                       During Sampling Phase, we record
-    //   SAMPLING | SAMPLING |         |         |                       - for how long is the user active or inactive?
-    //     ON     |    OFF   |         |         |                       if we get a single event, during sampling ON phase,
-    //            +-|--|--|--+         +---------+                       we assume that user was active for entire sampling phase
-    //       10        10        10       10
 
     //  <---------------->
     //                  t1     t2    t3
@@ -46,41 +30,7 @@ class IDEActivityComponent implements ProjectComponent, AWTEventListener {
     //                   4     6 7   9
     //               LOG INACTIVE
 
-    /* Given: I define a inactive period of 2 units,
-
-     activeSessionStartTime, t = 1
-     activeSessionEndTime, t = 4
-     t = 4 , activeSessionEndTime (last Active Time)
-     t = 5, thread awakens  , diff = 5 - 4 = 1   (Inactive for 1 time Unit)
-     t = 6, thread awakens  , diff = 6 - 4 = 2   (Inactive for 2 Time Unit)
-     Send up event every 2 unit time
-     log(activeDuration) // (activeSessionEndTime - activeSessionStartTime) = 3
-     log(inactiveDuration)  //(inactiveSessionStartTime
-
-     log(inactiveDuration) //2 units
-
-     t = 10, lastEventTime (lastActiveTime)
-     t = 11, thread awakens, diff = 11 - 7 = 1 (Inactive for 1 time  unit)
-     t = 12, thread awakens, diff = 12 - 7 = 2 (Inactive for 2 time units)
-     Send up event every 2 unit time
-     log(lastActiveTime) // 7
-     log(inactiveDuration) //2
-
-                         AD ID ID ID ID AD
-     */
-
-    //  +---------+          +---------+         +---------+
-    //            |          |         |         |                       During Sampling Phase, we record
-    //   SAMPLING | SAMPLING |         |         |                       - for how long is the user active or inactive?
-    //     ON     |    OFF   |         |         |                       if we get a single event, during sampling ON phase,
-    //            +----------+         +---------+                       we assume that user was active for entire sampling phase
-    //
-    //
-    //  o-------------o-------------o-------------o-------------o         We log the data collected during sampling phase
-    //LOG HERE
-    //
-    // Define 1 Log Event = x samples
-    //
+    // We are detecting edges, both, leading and trailing.
 
     public IDEActivityComponent(Project project, BuildSettingsComponent settings) {
         this.project = project
@@ -110,6 +60,8 @@ class IDEActivityComponent implements ProjectComponent, AWTEventListener {
         if (!isUserActive) {
             activeSessionStartTime = System.currentTimeMillis()
             inactiveSessionEndTime = activeSessionStartTime
+//        We don't want to log inactive events for now
+/*
             long inactiveDurationInMillis = inactiveSessionEndTime - inactiveSessionStartTime
             try {
                 logEventQD(false, inactiveDurationInMillis)
@@ -117,6 +69,7 @@ class IDEActivityComponent implements ProjectComponent, AWTEventListener {
             catch (Exception e) {
 
             }
+*/
             isUserActive = true
         }
         activeSessionEndTime = System.currentTimeMillis()
