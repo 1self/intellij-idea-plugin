@@ -1,7 +1,6 @@
 package org.quantifieddev.idea
 
-import com.intellij.openapi.components.ProjectComponent
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.components.ApplicationComponent
 import org.joda.time.DateTime
 import org.quantifieddev.Configuration
 import org.quantifieddev.utils.DateFormat
@@ -11,8 +10,7 @@ import java.awt.event.AWTEventListener
 import java.awt.event.KeyEvent
 import java.awt.event.MouseEvent
 
-class IDEActivityComponent implements ProjectComponent, AWTEventListener {
-    private final Project project
+class IDEActivityComponent implements ApplicationComponent, AWTEventListener {
     private final BuildSettingsComponent settings
     private boolean disposed = false
     private boolean isUserActive = false
@@ -32,15 +30,14 @@ class IDEActivityComponent implements ProjectComponent, AWTEventListener {
 
     // We are detecting edges, both, leading and trailing.
 
-    public IDEActivityComponent(Project project, BuildSettingsComponent settings) {
-        this.project = project
+    public IDEActivityComponent(BuildSettingsComponent settings) {
         this.settings = settings
         Thread.start("IDEActivityDetectorThread") {
-            int PRESET_SLEEP_TIME = 5 * 60 * 1000
+            int PRESET_INACTIVITY_TIME = 1 * 60 * 1000
             while (!disposed) {
                 if (isUserActive) {       //User is active
                     long inactivityTime = System.currentTimeMillis() - activeSessionEndTime
-                    if (inactivityTime >= PRESET_SLEEP_TIME) {
+                    if (inactivityTime >= PRESET_INACTIVITY_TIME) {
                         inactiveSessionStartTime = activeSessionEndTime
                         long activeDurationInMillis = activeSessionEndTime - activeSessionStartTime
                         try {
@@ -52,7 +49,7 @@ class IDEActivityComponent implements ProjectComponent, AWTEventListener {
                         isUserActive = false
                     }
                 }
-                Thread.sleep(PRESET_SLEEP_TIME)
+                Thread.sleep(PRESET_INACTIVITY_TIME)
             }
         }
     }
@@ -89,7 +86,6 @@ class IDEActivityComponent implements ProjectComponent, AWTEventListener {
             default:
                 return
         }
-
     }
 
     void logEventQD(boolean isUserActive, long timeDurationInMillis) {
@@ -99,31 +95,23 @@ class IDEActivityComponent implements ProjectComponent, AWTEventListener {
 
     private Map createActivityEvent(isUserActive, timeDurationInMillis) {
         [
-                "dateTime": ['$date': new DateTime().toString(DateFormat.isoDateTime)],
-                "streamid": settings.streamId,
-                "location": [
-                        "lat": settings.latitude,
-                        "long": settings.longitude
-                ],
-                "source": 'Intellij Idea Plugin',
-                "version": Configuration.appConfig.product.version.complete,
-                "objectTags": ['Computer', 'Software'],
-                "actionTags": ['Develop'],
-                "properties": ['Environment': 'IntellijIdea12', 'isUserActive': isUserActive, 'duration': timeDurationInMillis]
+            "dateTime": ['$date': new DateTime().toString(DateFormat.isoDateTime)],
+            "streamid": settings.streamId,
+            "location": [
+                    "lat": settings.latitude,
+                    "long": settings.longitude
+            ],
+            "source": 'Intellij Idea Plugin',
+            "version": Configuration.appConfig.product.version.complete,
+            "objectTags": ['Computer', 'Software'],
+            "actionTags": ['Develop'],
+            "properties": ['Environment': 'IntellijIdea12', 'isUserActive': isUserActive, 'duration': timeDurationInMillis]
         ]
     }
 
     private def persist(Map event) {
         def writeToken = settings.writeToken
         Configuration.repository.insert(event, writeToken)
-    }
-
-    @Override
-    void projectOpened() {
-    }
-
-    @Override
-    void projectClosed() {
     }
 
     @Override
@@ -149,6 +137,5 @@ class IDEActivityComponent implements ProjectComponent, AWTEventListener {
     String getComponentName() {
         this.getClass().simpleName
     }
-
 
 }
