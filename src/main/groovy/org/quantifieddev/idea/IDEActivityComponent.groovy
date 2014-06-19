@@ -36,10 +36,11 @@ class IDEActivityComponent implements ProjectComponent, AWTEventListener {
         this.project = project
         this.settings = settings
         Thread.start("IDEActivityDetectorThread") {
+            int PRESET_SLEEP_TIME = 5 * 60 * 1000
             while (!disposed) {
                 if (isUserActive) {       //User is active
                     long inactivityTime = System.currentTimeMillis() - activeSessionEndTime
-                    if (inactivityTime >= 5 * 60 * 1000) {
+                    if (inactivityTime >= PRESET_SLEEP_TIME) {
                         inactiveSessionStartTime = activeSessionEndTime
                         long activeDurationInMillis = activeSessionEndTime - activeSessionStartTime
                         try {
@@ -51,6 +52,7 @@ class IDEActivityComponent implements ProjectComponent, AWTEventListener {
                         isUserActive = false
                     }
                 }
+                Thread.sleep(PRESET_SLEEP_TIME)
             }
         }
     }
@@ -134,6 +136,13 @@ class IDEActivityComponent implements ProjectComponent, AWTEventListener {
     @Override
     void disposeComponent() {
         disposed = true
+        try {
+            if(isUserActive) {
+                long activeDurationInMillis = activeSessionEndTime - activeSessionStartTime
+                logEventQD(isUserActive, activeDurationInMillis)
+            }
+        } catch(Exception e) {
+        }
     }
 
     @Override
