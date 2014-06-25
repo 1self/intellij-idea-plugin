@@ -11,6 +11,7 @@ import org.joda.time.DateTime
 import org.quantifieddev.Configuration
 import org.quantifieddev.lang.LanguageDetector
 import org.quantifieddev.utils.DateFormat
+import org.quantifieddev.utils.DesktopApi
 import org.quantifieddev.utils.EventLogger
 
 import javax.imageio.ImageIO
@@ -135,9 +136,8 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
             @Override
             public void hyperlinkUpdate(HyperlinkEvent e) {
                 if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                    Desktop desktop = Desktop.getDesktop()
                     try {
-                        desktop.browse(e.getURL().toURI())
+                        DesktopApi.browse(e.getURL().toURI())
                     } catch (Exception ex) {
                         EventLogger.logError('Problem', ex.message)
                     }
@@ -292,7 +292,7 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
                 def encodedStreamId = settings.streamId ? URLEncoder.encode(settings.streamId, "UTF-8") : settings.streamId
                 def encodedReadToken = settings.readToken ? URLEncoder.encode(settings.readToken, "UTF-8") : settings.readToken
                 def queryParams = "?streamId=$encodedStreamId&readToken=$encodedReadToken"
-                Desktop.getDesktop().browse(new URL(Configuration.QD_DASHBOARD_URL + queryParams).toURI())
+                DesktopApi.browse(new URL(Configuration.QD_DASHBOARD_URL + queryParams).toURI())
             }
         })
     }
