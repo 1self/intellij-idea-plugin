@@ -18,7 +18,7 @@ class IDEActivityComponent implements ApplicationComponent, AWTEventListener {
     private long activeSessionEndTime = activeSessionStartTime
     private long inactiveSessionStartTime = System.currentTimeMillis()
     private long inactiveSessionEndTime = inactiveSessionStartTime
-
+    int PRESET_INACTIVITY_TIME = 1 * 60 * 1000
 
     //  <---------------->
     //                  t1     t2    t3
@@ -33,7 +33,6 @@ class IDEActivityComponent implements ApplicationComponent, AWTEventListener {
     public IDEActivityComponent(BuildSettingsComponent settings) {
         this.settings = settings
         Thread.start("IDEActivityDetectorThread") {
-            int PRESET_INACTIVITY_TIME = 1 * 60 * 1000
             while (!disposed) {
                 if (isUserActive) {       //User is active
                     long inactivityTime = System.currentTimeMillis() - activeSessionEndTime
@@ -71,6 +70,19 @@ class IDEActivityComponent implements ApplicationComponent, AWTEventListener {
 */
             isUserActive = true
         }
+        else {
+            def inactivityTime = System.currentTimeMillis() - activeSessionEndTime
+            if (inactivityTime >= PRESET_INACTIVITY_TIME) {
+                long activeDurationInMillis = activeSessionEndTime - activeSessionStartTime
+                try {
+                    activeSessionStartTime = System.currentTimeMillis()
+                    logEventQD(true, activeDurationInMillis)
+                }
+                catch (Exception e) {
+
+                }
+            }
+        }
         activeSessionEndTime = System.currentTimeMillis()
     }
 
@@ -95,17 +107,17 @@ class IDEActivityComponent implements ApplicationComponent, AWTEventListener {
 
     private Map createActivityEvent(isUserActive, timeDurationInMillis) {
         [
-            "dateTime": ['$date': new DateTime().toString(DateFormat.isoDateTime)],
-            "streamid": settings.streamId,
-            "location": [
-                    "lat": settings.latitude,
-                    "long": settings.longitude
-            ],
-            "source": 'Intellij Idea Plugin',
-            "version": Configuration.appConfig.product.version.complete,
-            "objectTags": ['Computer', 'Software'],
-            "actionTags": ['Develop'],
-            "properties": ['Environment': 'IntellijIdea12', 'isUserActive': isUserActive, 'duration': timeDurationInMillis]
+                "dateTime": ['$date': new DateTime().toString(DateFormat.isoDateTime)],
+                "streamid": settings.streamId,
+                "location": [
+                        "lat": settings.latitude,
+                        "long": settings.longitude
+                ],
+                "source": 'Intellij Idea Plugin',
+                "version": Configuration.appConfig.product.version.complete,
+                "objectTags": ['Computer', 'Software'],
+                "actionTags": ['Develop'],
+                "properties": ['Environment': 'IntellijIdea12', 'isUserActive': isUserActive, 'duration': timeDurationInMillis]
         ]
     }
 
@@ -125,11 +137,11 @@ class IDEActivityComponent implements ApplicationComponent, AWTEventListener {
     void disposeComponent() {
         disposed = true
         try {
-            if(isUserActive) {
+            if (isUserActive) {
                 long activeDurationInMillis = activeSessionEndTime - activeSessionStartTime
                 logEventQD(isUserActive, activeDurationInMillis)
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
         }
     }
 
