@@ -1,6 +1,7 @@
 package org.quantifieddev.utils
 
 import groovyx.net.http.RESTClient
+import org.quantifieddev.Configuration
 
 import java.util.concurrent.BlockingQueue
 
@@ -37,7 +38,7 @@ class PlatformPersister implements Runnable {
     }
 
     private void sendEventToPlatformViaREST(event, String writeToken) {
-        RESTClient platform = new RESTClient("$platformReadWriteUri", 'application/json')
+        RESTClient platform = new RESTClient("$Configuration.repository.platformReadWriteUri", 'application/json')
         def response = platform.post([body: event, headers: ["Authorization": writeToken]])
         if (response.status == 200) {
             println("Executed Successfully $response.data")
