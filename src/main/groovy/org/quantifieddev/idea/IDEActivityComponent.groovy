@@ -18,7 +18,7 @@ class IDEActivityComponent implements ApplicationComponent, AWTEventListener {
     private long activeSessionEndTime = activeSessionStartTime
     private long inactiveSessionStartTime = System.currentTimeMillis()
     private long inactiveSessionEndTime = inactiveSessionStartTime
-    int PRESET_INACTIVITY_TIME = 1 * 60 * 1000
+    int THRESHOLD_INACTIVITY_DURATION = 1 * 60 * 1000
 
     //  <---------------->
     //                  t1     t2    t3
@@ -27,63 +27,33 @@ class IDEActivityComponent implements ApplicationComponent, AWTEventListener {
     //  +----------------+     +-----+               INACTIVE
     //                   4     6 7   9
     //               LOG INACTIVE
-
     // We are detecting edges, both, leading and trailing.
-
     public IDEActivityComponent(BuildSettingsComponent settings) {
         this.settings = settings
         Thread.start("IDEActivityDetectorThread") {
             while (!disposed) {
-                if (isUserActive) {       //User is active
-                    long inactivityTime = System.currentTimeMillis() - activeSessionEndTime
-                    if (inactivityTime >= PRESET_INACTIVITY_TIME) {
+                if (isUserActive) {
+                    if (inactivityDuration() >= THRESHOLD_INACTIVITY_DURATION) {
                         inactiveSessionStartTime = activeSessionEndTime
-                        long activeDurationInMillis = activeSessionEndTime - activeSessionStartTime
-                        try {
-                            logEventQD(true, activeDurationInMillis)
-                        }
-                        catch (Exception e) {
-
-                        }
-                        isUserActive = false
+                        logEventQD(activityDuration())
+                        markUserAsInactive()
                     }
                 }
-                Thread.sleep(PRESET_INACTIVITY_TIME)
+                Thread.sleep(THRESHOLD_INACTIVITY_DURATION)
             }
         }
     }
 
-    //This method belongs to AWTEventListener
-    private void handleEvent(AWTEvent event) {
-        if (!isUserActive) {
-            activeSessionStartTime = System.currentTimeMillis()
-            inactiveSessionEndTime = activeSessionStartTime
-//        We don't want to log inactive events for now
-/*
-            long inactiveDurationInMillis = inactiveSessionEndTime - inactiveSessionStartTime
-            try {
-                logEventQD(false, inactiveDurationInMillis)
-            }
-            catch (Exception e) {
+    private long inactivityDuration() {
+        System.currentTimeMillis() - activeSessionEndTime
+    }
 
-            }
-*/
-            isUserActive = true
-        }
-        else {
-            def inactivityTime = System.currentTimeMillis() - activeSessionEndTime
-            if (inactivityTime >= PRESET_INACTIVITY_TIME) {
-                long activeDurationInMillis = activeSessionEndTime - activeSessionStartTime
-                try {
-                    activeSessionStartTime = System.currentTimeMillis()
-                    logEventQD(true, activeDurationInMillis)
-                }
-                catch (Exception e) {
+    private long activityDuration() {
+        activeSessionEndTime - activeSessionStartTime
+    }
 
-                }
-            }
-        }
-        activeSessionEndTime = System.currentTimeMillis()
+    private void markUserAsInactive() {
+        isUserActive = false
     }
 
     @Override
@@ -94,27 +64,55 @@ class IDEActivityComponent implements ApplicationComponent, AWTEventListener {
             case MouseEvent.MOUSE_CLICKED:
                 //TODO: Key press for Enter, Backspace, Tab
             case KeyEvent.KEY_PRESSED:
-                handleEvent(event)
+                handleEvent()
             default:
                 return
         }
     }
 
-    void logEventQD(boolean isUserActive, long timeDurationInMillis) {
-        def activityEvent = createActivityEvent(isUserActive, timeDurationInMillis)
+    private void handleEvent() {
+        if (!isUserActive) {
+            startCountingActivity()
+            markUserAsActive()
+        } else if (inactivityDuration() >= THRESHOLD_INACTIVITY_DURATION) {
+            handleIdeaWakeupEvent()
+        }
+        updateActivityEndCounter()
+    }
+
+    private void startCountingActivity() {
+        activeSessionStartTime = System.currentTimeMillis()
+        inactiveSessionEndTime = activeSessionStartTime
+    }
+
+    private void markUserAsActive() {
+        isUserActive = true
+    }
+
+    private void handleIdeaWakeupEvent() {
+        logEventQD(activityDuration())
+        startCountingActivity()
+    }
+
+    private void updateActivityEndCounter() {
+        activeSessionEndTime = System.currentTimeMillis()
+    }
+
+    void logEventQD(long timeDurationInMillis) {
+        def activityEvent = createActivityEvent(timeDurationInMillis)
         persist(activityEvent)
     }
 
-    private Map createActivityEvent(isUserActive, timeDurationInMillis) {
+    private Map createActivityEvent(timeDurationInMillis) {
         [
-                "dateTime": ['$date': new DateTime().toString(DateFormat.isoDateTime)],
-                "streamid": settings.streamId,
-                "location": [
-                        "lat": settings.latitude,
+                "dateTime"  : ['$date': new DateTime().toString(DateFormat.isoDateTime)],
+                "streamid"  : settings.streamId,
+                "location"  : [
+                        "lat" : settings.latitude,
                         "long": settings.longitude
                 ],
-                "source": 'Intellij Idea Plugin',
-                "version": Configuration.appConfig.product.version.complete,
+                "source"    : 'Intellij Idea Plugin',
+                "version"   : Configuration.appConfig.product.version.complete,
                 "objectTags": ['Computer', 'Software'],
                 "actionTags": ['Develop'],
                 "properties": ['Environment': 'IntellijIdea12', 'isUserActive': isUserActive, 'duration': timeDurationInMillis]
@@ -136,12 +134,8 @@ class IDEActivityComponent implements ApplicationComponent, AWTEventListener {
     @Override
     void disposeComponent() {
         disposed = true
-        try {
-            if (isUserActive) {
-                long activeDurationInMillis = activeSessionEndTime - activeSessionStartTime
-                logEventQD(isUserActive, activeDurationInMillis)
-            }
-        } catch (Exception e) {
+        if (isUserActive) {
+            logEventQD(activityDuration())
         }
     }
 
