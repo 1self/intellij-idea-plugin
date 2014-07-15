@@ -26,7 +26,7 @@ class PlatformPersister implements Runnable {
                     try {
                         sendEventToPlatformViaREST(event, writeToken)
                     } catch (Exception ignored) {
-
+                        Thread.sleep(5 * 60 * 1000)
                     }
                 } else {
                     Thread.sleep(1 * 1000)
