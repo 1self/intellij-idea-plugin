@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>org.quantifieddev.build.plugin.id</id>
     <name>Quantified Dev Build Plugin</name>
-    <version>0.13.7.Beta1</version>
+    <version>0.13.8.Beta1</version>
     <vendor email="support@quantifieddev.org" url="http://www.quantifieddev.org">Quantified Dev</vendor>
 
     <description><![CDATA[

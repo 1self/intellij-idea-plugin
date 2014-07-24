@@ -99,8 +99,10 @@ class IDEActivityComponent implements ApplicationComponent, AWTEventListener {
     }
 
     void logEventQD(long timeDurationInMillis) {
-        def activityEvent = createActivityEvent(timeDurationInMillis)
-        persist(activityEvent)
+        if (timeDurationInMillis > 1000){
+            def activityEvent = createActivityEvent(timeDurationInMillis)
+            persist(activityEvent)
+        }
     }
 
     private Map createActivityEvent(timeDurationInMillis) {
