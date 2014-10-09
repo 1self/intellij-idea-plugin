@@ -19,12 +19,6 @@ ext {
     //common libs
     httpBuilder = 'org.codehaus.groovy.modules.http-builder:http-builder:0.6'
     jodaTime = 'joda-time:joda-time:2.3'
-
-    //common test libs
-    junit = 'junit:junit:4.8.1'
-    mockito = 'org.mockito:mockito-all:1.9.5'
-    spock = 'org.spockframework:spock-maven:0.7-groovy-1.8'
-
 }
 
 sourceSets.main.java.srcDirs = ['src/main/java', 'src/main/groovy']
@@ -32,8 +26,8 @@ sourceSets.main.java.srcDirs = ['src/main/java', 'src/main/groovy']
 dependencies {
     compile(project.ext.jodaTime,
             project.ext.httpBuilder)
-    testCompile(project.ext.junit, project.ext.mockito, project.ext.spock)
     compile fileTree(dir:project.ext.projectLibs, include:'**/*.jar')
+    compile 'org.codehaus.groovy:groovy-all:2.2.1'
 }
 
 repositories {
