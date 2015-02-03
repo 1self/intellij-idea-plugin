@@ -12,6 +12,8 @@ class PlatformRepository {
     def URI platformReadWriteUri
     def URI platformStreamUri
     def BlockingQueue<Tuple> eventQueue = new LinkedBlockingQueue<Tuple>();
+    final def appId = "app-id-e2b2df17bf1f6994c1a661384fff2854"
+    final def appSecret = "app-secret-0382136771320146d964b6d35df69827e80d7d26e7b80d9fcff22c0c1403c6c4"
 
     public PlatformRepository() {
         println("Welcome to QuantifiedDev Idea Plugin")
@@ -21,7 +23,7 @@ class PlatformRepository {
     def register(String content) {
         println("Registering the plugin.")
         RESTClient client = new RESTClient(platformStreamUri, 'application/json')
-        def response = client.post([body: content])
+        def response = client.post([body: content, headers: ["Authorization": appId + ":" + appSecret]])
         if (response.status == 200) {
             println("Executed Successfully $response.data")
             response.data

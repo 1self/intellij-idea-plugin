@@ -101,7 +101,7 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
         println("Initializing Project Component.")
         CompilerManager.getInstance(project).addCompilationStatusListener(this)
         CompilerManager.getInstance(project).addBeforeTask(beforeCompileTask)
-        Configuration.setPlatformReadWriteUri("${this.settings.platformUri}${this.settings.streamId}/event")
+        Configuration.setPlatformReadWriteUri("${this.settings.platformUri}${this.settings.streamId}/events")
     }
 
     //ProjectComponent

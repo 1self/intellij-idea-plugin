@@ -14,7 +14,7 @@ import org.quantifieddev.Configuration
 )
 
 class BuildSettingsPersister implements PersistentStateComponent<BuildSettingsPersister> {
-    private String platformURI = "http://quantifieddev.herokuapp.com/stream/"
+    private String platformURI = "https://api.1self.co/v1/streams/"
     private String locationURI = "http://freegeoip.net/json"
     private String streamId, writeToken, readToken
     private Double latitude, longitude

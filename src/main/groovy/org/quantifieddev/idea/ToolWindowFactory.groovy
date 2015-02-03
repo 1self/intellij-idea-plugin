@@ -25,8 +25,7 @@ import java.awt.event.ItemEvent
 import java.awt.event.ItemListener
 
 class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
-
-    private JButton wtfButton, settingsButton, qdButton, hadCoffeeButton, drankWaterButton
+    private JButton wtfButton, settingsButton, qdButton
     private JToggleButton helpToggleButton, notificationToggleButton
     private Image disabledNotificationImage = ImageIO.read(getClass().getResource('/announcements_grey_icon24x24.png'))
     private Image enabledNotificationImage = ImageIO.read(getClass().getResource('/announcements_blue_icon24x24.png'))
@@ -51,18 +50,6 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         wtfButton.setIcon(new ImageIcon(wtfImage))
         wtfButton.setToolTipText("Log WTF!")
         contentPanel.add(wtfButton)
-
-        hadCoffeeButton = new JButton()
-        Image hadCoffeeImage = ImageIO.read(getClass().getResource('/coffee_icon32x32.png'))
-        hadCoffeeButton.setIcon(new ImageIcon(hadCoffeeImage))
-        hadCoffeeButton.setToolTipText('Had Coffee')
-        contentPanel.add(hadCoffeeButton)
-
-        drankWaterButton = new JButton()
-        Image drankWaterImage = ImageIO.read(getClass().getResource('/water_icon9x32.png'))
-        drankWaterButton.setIcon(new ImageIcon(drankWaterImage))
-        drankWaterButton.setToolTipText('Drank Water')
-        contentPanel.add(drankWaterButton)
 
         helpEditorScrollPane = setupHelpPane()
         contentPanel.add(helpEditorScrollPane)
@@ -173,38 +160,6 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         ]
     }
 
-    private Map createDrankWaterEventQD(String volume = '250ml') {
-        [
-                "dateTime"  : ['$date': new DateTime().toString(DateFormat.isoDateTime)],
-                "streamid"  : settings.streamId,
-                "location"  : [
-                        "lat" : settings.latitude,
-                        "long": settings.longitude
-                ],
-                "source"    : 'Intellij Idea Plugin',
-                "version"   : Configuration.appConfig.product.version.complete,
-                "objectTags": ['Drink', 'Water'],
-                "actionTags": ['drink'],
-                "properties": ['Environment': 'IntellijIdea12', 'Volume': volume]
-        ]
-    }
-
-    private Map createHadCoffeeEventQD() {
-        [
-                "dateTime"  : ['$date': new DateTime().toString(DateFormat.isoDateTime)],
-                "streamid"  : settings.streamId,
-                "location"  : [
-                        "lat" : settings.latitude,
-                        "long": settings.longitude
-                ],
-                "source"    : 'Intellij Idea Plugin',
-                "version"   : Configuration.appConfig.product.version.complete,
-                "objectTags": ['Drink', 'Coffee'],
-                "actionTags": ['drink'],
-                "properties": ['Environment': 'IntellijIdea12']
-        ]
-    }
-
     @Override
     void createToolWindowContent(Project project, com.intellij.openapi.wm.ToolWindow toolWindow) {
         this.toolWindow = toolWindow
@@ -214,29 +169,7 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         setupQDButtonListener(project)
         setupHelpButtonListener(project)
         setupNotificationButtonListener(project)
-        setupDrankWaterButtonListener(project)
-        setupHadCoffeeButtonListener(project)
         component.getParent().add(toolWindowContent)
-    }
-
-    private void setupDrankWaterButtonListener(project) {
-        drankWaterButton.addActionListener(new ActionListener() {
-            @Override
-            void actionPerformed(ActionEvent e) {
-                Map drankWaterEvent = createDrankWaterEventQD()
-                persist(drankWaterEvent)
-            }
-        })
-    }
-
-    private void setupHadCoffeeButtonListener(project) {
-        hadCoffeeButton.addActionListener(new ActionListener() {
-            @Override
-            void actionPerformed(ActionEvent e) {
-                Map hadCoffeeEvent = createHadCoffeeEventQD()
-                persist(hadCoffeeEvent)
-            }
-        })
     }
 
     private void setupNotificationButtonListener(project) {
@@ -279,8 +212,6 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
             void actionPerformed(ActionEvent ev) {
                 helpEditorScrollPane.setVisible(showHelp)
                 wtfButton.setVisible(!showHelp)
-                drankWaterButton.setVisible(!showHelp)
-                hadCoffeeButton.setVisible(!showHelp)
             }
         })
     }

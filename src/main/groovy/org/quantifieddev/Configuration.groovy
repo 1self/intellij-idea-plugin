@@ -10,7 +10,7 @@ class Configuration {
     static final ConfigObject appConfig = new ConfigSlurper('configuration').parse(AppConfig.class).configuration
 
     def static final repository = new PlatformRepository()
-    def static final QD_DASHBOARD_URL = "http://app.quantifieddev.org/dashboard"
+    def static final QD_DASHBOARD_URL = "https://app.1self.co/dashboard"
 
     def static setPlatformReadWriteUri(String platformReadWriteUri) {
         println("Initializing Read Write URI.")
