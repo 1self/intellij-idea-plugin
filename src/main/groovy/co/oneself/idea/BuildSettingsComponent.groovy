@@ -48,7 +48,7 @@ public class BuildSettingsComponent implements ApplicationComponent, Configurabl
 
     @Override
     void initComponent() {
-        println("Initializing App Component.")
+        //println("Initializing App Component.")
         buildSettingsPersister.getState()
     }
 

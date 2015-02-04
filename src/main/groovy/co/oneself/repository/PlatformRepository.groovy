@@ -16,7 +16,7 @@ class PlatformRepository {
     private static PlatformRepository platformRepository = new PlatformRepository();
 
     private PlatformRepository() {
-        println("Welcome to 1self Idea Plugin")
+        //println("Welcome to 1self Idea Plugin")
         Executors.newFixedThreadPool(1).submit(new PlatformPersister(eventQueue))
     }
 
@@ -25,14 +25,14 @@ class PlatformRepository {
     }
 
     def register(String content) {
-        println("Registering the plugin.")
+        //println("Registering the plugin.")
         RESTClient client = new RESTClient(new URI(_1selfStreamUrl), 'application/json')
         def response = client.post([body: content, headers: ["Authorization": appId + ":" + appSecret]])
         if (response.status == 200) {
-            println("Executed Successfully $response.data")
+            //println("Executed Successfully $response.data")
             response.data
         } else {
-            println("Unexpected failure. Cannot get a new stream.")
+            //println("Unexpected failure. Cannot get a new stream.")
             """{ "Failure" : "${response.statusLine}" }""".toString()
         }
     }
@@ -45,10 +45,10 @@ class PlatformRepository {
         RESTClient client = new RESTClient(locationUriString)
         def response = client.get([:])
         if (response.status == 200) {
-            println("Executed Successfully $response.data")
+            //println("Executed Successfully $response.data")
             response.data
         } else {
-            println("Unexpected failure. Cannot get location.")
+            //println("Unexpected failure. Cannot get location.")
             """{ "Failure" : "${response.statusLine}" }""".toString()
         }
     }

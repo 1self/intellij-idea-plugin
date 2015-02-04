@@ -45,7 +45,7 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
             boolean execute(CompileContext compileContext) {
                 def executionSuceeded = true    //Exception in plugin should not abort the compilation
                 try {
-                    def startEvent = createBuildStartEventQD(new DateTime(compileContext.properties.startCompilationStamp).toString(isoDateTimeFormat))
+                    def startEvent = createBuildStartEvent(new DateTime(compileContext.properties.startCompilationStamp).toString(isoDateTimeFormat))
                     persist(startEvent)
                 }
                 catch (Exception e) {
@@ -62,7 +62,7 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
         try {
             def buildDuration = DateTime.now().millis - compileContext.properties.startCompilationStamp
             def buildFinishTime = new DateTime().toString(isoDateTimeFormat)
-            def finishEvent = createBuildFinishEventQD(getCompilationStatus(aborted, errors), buildFinishTime, buildDuration)
+            def finishEvent = createBuildFinishEvent(getCompilationStatus(aborted, errors), buildFinishTime, buildDuration)
             persist(finishEvent)
         }
         catch (Exception e) {
@@ -98,7 +98,7 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
     //ProjectComponent
     @Override
     void initComponent() {
-        println("Initializing Project Component.")
+        //println("Initializing Project Component.")
         CompilerManager.getInstance(project).addCompilationStatusListener(this)
         CompilerManager.getInstance(project).addBeforeTask(beforeCompileTask)
     }
@@ -118,7 +118,7 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
     //todo: reflect on whether language property needs to be matured to object tags?
     //todo: really its a general question that we need to have a guideline on:
     //todo: when should a property be upgraded to a object tag or vice versa?
-    private def createBuildStartEventQD(startedOn) {
+    private def createBuildStartEvent(startedOn) {
         [
                 'dateTime'  : startedOn,
                 'location'  : ['lat': settings.latitude, 'long': settings.longitude],
@@ -130,7 +130,7 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
         ]
     }
 
-    private def createBuildFinishEventQD(compilationStatus, finishedOn, buildDuration) {
+    private def createBuildFinishEvent(compilationStatus, finishedOn, buildDuration) {
         [
                 'dateTime'  : finishedOn,
                 'location'  : ['lat': settings.latitude, 'long': settings.longitude],

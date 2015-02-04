@@ -19,7 +19,7 @@ class BuildSettingsPersister implements PersistentStateComponent<BuildSettingsPe
     private Double latitude, longitude
 
     private void createStream() {
-        println("Creating a new stream.")
+        //println("Creating a new stream.")
         def streamDetails = PlatformRepository.getInstance().register("{}")
         this.streamId = streamDetails.streamid
         this.writeToken = streamDetails.writeToken
@@ -76,27 +76,27 @@ class BuildSettingsPersister implements PersistentStateComponent<BuildSettingsPe
 
     @Override
     BuildSettingsPersister getState() {
-        println("getting state")
+        //println("getting state")
         if (this.streamId == null) {
             try {
                 createStream()
             }
             catch (Exception e) {
-                println("Exception : " + e.message)
-                println("Exception during creating stream! Proceeding further without registration...")
+                //println("Exception : " + e.message)
+                //println("Exception during creating stream! Proceeding further without registration...")
             }
         }
         if (!Configuration._1selfEventsUrl) {
             Configuration._1selfEventsUrl = Configuration._1selfStreamUrl + this.streamId + "/events";
-            println("Setting url : " + Configuration._1selfEventsUrl)
+            //println("Setting url : " + Configuration._1selfEventsUrl)
         }
         if (!this.latitude || !this.longitude) {
             try {
                 locateUser()
             }
             catch (Exception e) {
-                println("Exception : " + e.message)
-                println("Exception during fetching user location! Proceeding further with existing details...")
+                //println("Exception : " + e.message)
+                //println("Exception during fetching user location! Proceeding further with existing details...")
             }
         }
         return this
@@ -104,7 +104,7 @@ class BuildSettingsPersister implements PersistentStateComponent<BuildSettingsPe
 
     @Override
     void loadState(BuildSettingsPersister buildSettings) {
-        println("loading state")
+        //println("loading state")
         XmlSerializerUtil.copyBean(buildSettings, this)
     }
 }

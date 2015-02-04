@@ -26,7 +26,7 @@ import java.awt.event.ItemEvent
 import java.awt.event.ItemListener
 
 class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
-    private JButton wtfButton, settingsButton, qdButton
+    private JButton wtfButton, settingsButton, _1selfDashboardButton
     private JToggleButton helpToggleButton, notificationToggleButton
     private Image disabledNotificationImage = ImageIO.read(getClass().getResource('/announcements_grey_icon24x24.png'))
     private Image enabledNotificationImage = ImageIO.read(getClass().getResource('/announcements_blue_icon24x24.png'))
@@ -66,15 +66,15 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         Image settingsImage = ImageIO.read(getClass().getResource('/settings_24x24.png'))
         settingsButton.setMargin(new Insets(0, 0, 0, 0))
         settingsButton.setIcon(new ImageIcon(settingsImage))
-        settingsButton.setToolTipText("Edit/View QD Settings")
+        settingsButton.setToolTipText("Edit/View 1self Settings")
         toolBar.add(settingsButton)
 
-        qdButton = new JButton()
-        Image qdImage = ImageIO.read(getClass().getResource('/QDLogo_24x24.png'))
-        qdButton.setMargin(new Insets(0, 0, 0, 0))
-        qdButton.setIcon(new ImageIcon(qdImage))
-        qdButton.setToolTipText("View my QD dashboard in browser")
-        toolBar.add(qdButton)
+        _1selfDashboardButton = new JButton()
+        Image _1selfLogoImage = ImageIO.read(getClass().getResource('/QDLogo_24x24.png'))
+        _1selfDashboardButton.setMargin(new Insets(0, 0, 0, 0))
+        _1selfDashboardButton.setIcon(new ImageIcon(_1selfLogoImage))
+        _1selfDashboardButton.setToolTipText("View my 1self dashboard in browser")
+        toolBar.add(_1selfDashboardButton)
 
         helpToggleButton = new JToggleButton()
         Image helpImage = ImageIO.read(getClass().getResource('/help_24x24.png'))
@@ -138,7 +138,7 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         helpEditorScrollPane
     }
 
-    private Map createWTFEventQD(languages = []) {
+    private Map createWTFEvent(languages = []) {
         def objectTags = ['Computer', 'Software']
         def properties = ['Environment': 'IntellijIdea12']
 
@@ -166,7 +166,7 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         Component component = toolWindow.getComponent()
         setupSettingsButtonListener(project)
         setupWtfButtonListener(project)
-        setupQDButtonListener(project)
+        setupDashboardButtonListener(project)
         setupHelpButtonListener(project)
         setupNotificationButtonListener(project)
         component.getParent().add(toolWindowContent)
@@ -212,14 +212,14 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         })
     }
 
-    private void setupQDButtonListener(project) {
-        qdButton.addActionListener(new ActionListener() {
+    private void setupDashboardButtonListener(project) {
+        _1selfDashboardButton.addActionListener(new ActionListener() {
             @Override
             void actionPerformed(ActionEvent e) {
                 def encodedStreamId = settings.streamId ? URLEncoder.encode(settings.streamId, "UTF-8") : settings.streamId
                 def encodedReadToken = settings.readToken ? URLEncoder.encode(settings.readToken, "UTF-8") : settings.readToken
                 def queryParams = "?streamId=$encodedStreamId&readToken=$encodedReadToken"
-                DesktopApi.browse(new URL(Configuration.QD_DASHBOARD_URL + queryParams).toURI())
+                DesktopApi.browse(new URL(Configuration._1SELF_DASHBOARD_URL + queryParams).toURI())
             }
         })
     }
@@ -236,14 +236,14 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
                     final VirtualFile file = fileDocumentManager.getFile(document)
                     def languages = LanguageDetector.detectLanguages([file.canonicalPath])
                     if (languages) {
-                        Map wtfEvent = createWTFEventQD(languages)
+                        Map wtfEvent = createWTFEvent(languages)
                         persist(wtfEvent)
                     } else {
-                        Map wtfEvent = createWTFEventQD()
+                        Map wtfEvent = createWTFEvent()
                         persist(wtfEvent)
                     }
                 } else {
-                    Map wtfEvent = createWTFEventQD()
+                    Map wtfEvent = createWTFEvent()
                     persist(wtfEvent)
                 }
             }
