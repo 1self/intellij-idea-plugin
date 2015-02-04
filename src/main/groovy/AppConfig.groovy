@@ -42,18 +42,18 @@ def toCompleteVersion() {
 
 configuration {
 	product {
-		name = 'quantifieddev-idea-plugin'
+		name = '1self-idea-plugin'
 
 		vendor {
-			name = 'QuantifiedDev.org'
+			name = '1self.co'
 		}
         //JBoss Versioning Convention
 		version {
 			major = 0  //number related to production release
-			minor = 13 //changes or feature additions
-			micro = 10  //patches and bug fixes
+			minor = 14 //changes or feature additions
+			micro = 0  //patches and bug fixes
 			qualifier {
-				alphaNumeric = 'beta1' //Alpha# or Beta# or CR# or GA, or SP#
+				alphaNumeric = '' //Alpha# or Beta# or CR# or GA, or SP#
 			}
             previous = 'None'
 			complete = toCompleteVersion()

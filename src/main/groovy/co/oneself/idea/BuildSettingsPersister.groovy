@@ -1,27 +1,26 @@
-package org.quantifieddev.idea
+package co.oneself.idea
 
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.XmlSerializerUtil
-import org.quantifieddev.Configuration
+import co.oneself.Configuration
+import co.oneself.repository.PlatformRepository
 
 @State(
         name = "BuildSettings",
         storages = [
-        @Storage(id = "dir", file = "\$APP_CONFIG\$/quantifiedDevSettings.xml")
+                @Storage(id = "dir", file = "\$APP_CONFIG\$/1selfSettings.xml")
         ]
 )
 
 class BuildSettingsPersister implements PersistentStateComponent<BuildSettingsPersister> {
-    private String platformURI = "https://api.1self.co/v1/streams/"
-    private String locationURI = "http://freegeoip.net/json"
     private String streamId, writeToken, readToken
     private Double latitude, longitude
 
     private void createStream() {
         println("Creating a new stream.")
-        def streamDetails = Configuration.repository.register("{}")
+        def streamDetails = PlatformRepository.getInstance().register("{}")
         this.streamId = streamDetails.streamid
         this.writeToken = streamDetails.writeToken
         this.readToken = streamDetails.readToken
@@ -29,15 +28,10 @@ class BuildSettingsPersister implements PersistentStateComponent<BuildSettingsPe
     }
 
     private void locateUser() {
-        def locationDetails = Configuration.repository.locate(locationURI)
+        def locationDetails = PlatformRepository.getInstance().locate(Configuration.locationURI)
         this.latitude = locationDetails.latitude
         this.longitude = locationDetails.longitude
         println locationDetails;
-    }
-
-
-    public setPlatformURI(String uri) {
-        this.platformURI = uri
     }
 
     public setStreamId(String streamId) {
@@ -58,10 +52,6 @@ class BuildSettingsPersister implements PersistentStateComponent<BuildSettingsPe
 
     public setLongitude(Double longitude) {
         this.longitude = longitude
-    }
-
-    public String getPlatformURI() {
-        return this.platformURI
     }
 
     public String getStreamId() {
@@ -96,12 +86,18 @@ class BuildSettingsPersister implements PersistentStateComponent<BuildSettingsPe
                 println("Exception during creating stream! Proceeding further without registration...")
             }
         }
-        try {
-            locateUser()
+        if (!Configuration._1selfEventsUrl) {
+            Configuration._1selfEventsUrl = Configuration._1selfStreamUrl + this.streamId + "/events";
+            println("Setting url : " + Configuration._1selfEventsUrl)
         }
-        catch (Exception e) {
-            println("Exception : " + e.message)
-            println("Exception during fetching user location! Proceeding further with existing details...")
+        if (!this.latitude || !this.longitude) {
+            try {
+                locateUser()
+            }
+            catch (Exception e) {
+                println("Exception : " + e.message)
+                println("Exception during fetching user location! Proceeding further with existing details...")
+            }
         }
         return this
     }

@@ -1,4 +1,4 @@
-package org.quantifieddev.lang
+package co.oneself.lang
 
 class LanguageDetector {
     public static def languageFileExtensions = [

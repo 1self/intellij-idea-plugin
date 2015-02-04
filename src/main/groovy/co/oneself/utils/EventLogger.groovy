@@ -1,12 +1,12 @@
-package org.quantifieddev.utils
+package co.oneself.utils
 
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
 
 class EventLogger {
-    private static String groupDisplayId = 'org.quantifieddev.build.plugin.id'
-    public static boolean canLog = false
+    private static String groupDisplayId = 'co.oneself.build.plugin.id'
+    public static boolean canLog = true
 
     private EventLogger() {
     }

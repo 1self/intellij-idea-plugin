@@ -1,9 +1,10 @@
-package org.quantifieddev.idea
+package co.oneself.idea
 
 import com.intellij.openapi.components.ApplicationComponent
 import org.joda.time.DateTime
-import org.quantifieddev.Configuration
-import org.quantifieddev.utils.DateFormat
+import co.oneself.Configuration
+import co.oneself.repository.PlatformRepository
+import co.oneself.utils.DateFormat
 
 import java.awt.*
 import java.awt.event.AWTEventListener
@@ -60,9 +61,8 @@ class IDEActivityComponent implements ApplicationComponent, AWTEventListener {
     void eventDispatched(AWTEvent event) {
         def eventId = event.getID()
         switch (eventId) {
-            case MouseEvent.MOUSE_MOVED:
+//            case MouseEvent.MOUSE_MOVED:
             case MouseEvent.MOUSE_CLICKED:
-                //TODO: Key press for Enter, Backspace, Tab
             case KeyEvent.KEY_PRESSED:
                 handleEvent()
             default:
@@ -99,7 +99,7 @@ class IDEActivityComponent implements ApplicationComponent, AWTEventListener {
     }
 
     void logEventQD(long timeDurationInMillis) {
-        if (timeDurationInMillis > 1000){
+        if (timeDurationInMillis > 1000) {
             def activityEvent = createActivityEvent(timeDurationInMillis)
             persist(activityEvent)
         }
@@ -108,7 +108,6 @@ class IDEActivityComponent implements ApplicationComponent, AWTEventListener {
     private Map createActivityEvent(timeDurationInMillis) {
         [
                 "dateTime"  : ['$date': new DateTime().toString(DateFormat.isoDateTime)],
-                "streamid"  : settings.streamId,
                 "location"  : [
                         "lat" : settings.latitude,
                         "long": settings.longitude
@@ -123,7 +122,7 @@ class IDEActivityComponent implements ApplicationComponent, AWTEventListener {
 
     private def persist(Map event) {
         def writeToken = settings.writeToken
-        Configuration.repository.insert(event, writeToken)
+        PlatformRepository.getInstance().insert(event, writeToken)
     }
 
     @Override

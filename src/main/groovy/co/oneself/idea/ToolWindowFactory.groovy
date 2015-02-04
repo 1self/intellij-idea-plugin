@@ -1,4 +1,4 @@
-package org.quantifieddev.idea
+package co.oneself.idea
 
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
@@ -8,11 +8,12 @@ import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import org.joda.time.DateTime
-import org.quantifieddev.Configuration
-import org.quantifieddev.lang.LanguageDetector
-import org.quantifieddev.utils.DateFormat
-import org.quantifieddev.utils.DesktopApi
-import org.quantifieddev.utils.EventLogger
+import co.oneself.Configuration
+import co.oneself.lang.LanguageDetector
+import co.oneself.repository.PlatformRepository
+import co.oneself.utils.DateFormat
+import co.oneself.utils.DesktopApi
+import co.oneself.utils.EventLogger
 
 import javax.imageio.ImageIO
 import javax.swing.*
@@ -84,8 +85,8 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
 
         notificationToggleButton = new JToggleButton()
         notificationToggleButton.setMargin(new Insets(0, 0, 0, 0))
-        notificationToggleButton.setIcon(new ImageIcon(disabledNotificationImage))
-        notificationToggleButton.setToolTipText("Turn Notifications ON")
+        notificationToggleButton.setIcon(new ImageIcon(enabledNotificationImage))
+        notificationToggleButton.setToolTipText("Turn Notifications OFF")
         toolBar.add(notificationToggleButton)
 
         toolBar
@@ -95,19 +96,19 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         def encodedStreamId = settings.streamId ? URLEncoder.encode(settings.streamId, "UTF-8") : settings.streamId
         def encodedReadToken = settings.readToken ? URLEncoder.encode(settings.readToken, "UTF-8") : settings.readToken
         def message = """
-                       | This QuantifiedDev plug-in lets you log and compare your software development activity for personal insights. We are currently in beta and are releasing new features all the time.
+                       | This 1self plug-in lets you log and compare your software development activity for personal insights. We are currently in beta and are releasing new features all the time.
                        | <p>
                        | Current features (ver $Configuration.appConfig.product.version.complete):
                        | <ol>
-                       | <li>WTFs - Wtf is a way of <a href='http://www.quantifieddev.org/images/wtfs_per_minute.gif?plugin=intellij'>measuring code quality</a>. Hit the wtf button every time you see something you don't like or find confusing, then review you wtfs over time on <a href='http://www.quantifieddev.org/app/dashboard.html?plugin=intellij&type=wtf&streamId=$encodedStreamId&readToken=$encodedReadToken'>your QD dashboard</a>.
+                       | <li>WTFs - Wtf is a way of <a href='http://www.oneself.org/images/wtfs_per_minute.gif?plugin=intellij'>measuring code quality</a>. Hit the wtf button every time you see something you don't like or find confusing, then review your wtfs over time on <a href='https://app.1self.co/dashboard?plugin=intellij&type=wtf&streamId=$encodedStreamId&readToken=$encodedReadToken'>your 1self dashboard</a>.
                        | </li>
-                       | <li>Builds - The plug-in logs when you start and complete builds and whether the build succeeded or failed. You can see your build behaviour over time on <a href='http://www.quantifieddev.org/app/dashboard.html?plugin=intellij&type=build&streamId=$encodedStreamId&readToken=$encodedReadToken'>your QD dashboard</a>.
+                       | <li>Builds - The plug-in logs when you start and complete builds and whether the build succeeded or failed. You can see your build behaviour over time on <a href='https://app.1self.co/dashboard?plugin=intellij&type=build&streamId=$encodedStreamId&readToken=$encodedReadToken'>your 1self dashboard</a>.
                        | </li>
-                       | <li>Community - The plug-in senses your location from your IP address and attaches this information to your logged events. This means that you can <a href='http://www.quantifieddev.org/app/community.html?plugin=intellij'>see yourself and your community of developers logging builds and WTFs around the world in real time</a>.
+                       | <li>Community - The plug-in senses your location from your IP address and attaches this information to your logged events. This means that you can <a href='https://app.1self.co/community?plugin=intellij'>see yourself and your community of developers logging builds and WTFs around the world in real time</a>.
                        | </li>
                        | </ol>
                        | </p>
-                       | For more info see <a href='http://www.quantifieddev.org/?plugin=intellij'>QuantifiedDev.org</a>
+                       | For more info see <a href='http://www.1self.co/?plugin=intellij'>1self.co</a>
                       """.stripMargin('|')
 
         JEditorPane helpEditorPane = new JEditorPane()
@@ -148,7 +149,6 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
 
         [
                 "dateTime"  : ['$date': new DateTime().toString(DateFormat.isoDateTime)],
-                "streamid"  : settings.streamId,
                 "location"  : [
                         "lat" : settings.latitude,
                         "long": settings.longitude
@@ -178,9 +178,9 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
             @Override
             public void itemStateChanged(ItemEvent ev) {
                 int state = ev.getStateChange()
-                if (state == ItemEvent.SELECTED) {
+                if (state == ItemEvent.DESELECTED) {
                     EventLogger.canLog = true
-                    EventLogger.logSuccess('Quantified Dev - Notifications', 'Turned On')
+                    EventLogger.logSuccess('1self - Notifications', 'Turned On')
                     notificationToggleButton.setIcon(new ImageIcon(enabledNotificationImage))
                     notificationToggleButton.setToolTipText(toolTipText + 'OFF')
                 } else {
@@ -199,11 +199,7 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
             @Override
             public void itemStateChanged(ItemEvent ev) {
                 int state = ev.getStateChange()
-                if (state == ItemEvent.SELECTED) {
-                    showHelp = true
-                } else {
-                    showHelp = false
-                }
+                showHelp = state == ItemEvent.SELECTED
             }
         })
 
@@ -266,7 +262,7 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
 
     private def persist(Map event) {
         def writeToken = settings.writeToken
-        Configuration.repository.insert(event, writeToken)
-        EventLogger.logSuccess("Successfully sent to quantifieddev.org", "$event")
+        PlatformRepository.getInstance().insert(event, writeToken)
+        EventLogger.logSuccess("Successfully sent to 1self.co", "$event")
     }
 }

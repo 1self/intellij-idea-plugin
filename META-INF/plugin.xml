@@ -1,16 +1,16 @@
 <idea-plugin version="2">
-    <id>org.quantifieddev.build.plugin.id</id>
-    <name>Quantified Dev Build Plugin</name>
-    <version>0.13.10.Beta1</version>
-    <vendor email="support@quantifieddev.org" url="http://www.quantifieddev.org">Quantified Dev</vendor>
+    <id>co.oneself.build.plugin.id</id>
+    <name>1self Idea Plugin</name>
+    <version>0.14.0</version>
+    <vendor email="team@1self.co" url="http://www.1self.co">1self</vendor>
 
     <description><![CDATA[
       <p>
-      This plugin sends build events to quantifieddev.org.
+      This plugin sends build events to 1self.co.
       Both build start and finish events (success or failure) are sent to it and
       you can see how many times during the day you have had good and bad builds.
       </p>
-      <small>Quantify your builds! <br/>
+      <small>Quantify your builds, IDE activity and WTFs!<br/>
       <a href="http://vimeo.com/91935724">Watch this Video</a>
       </small>
       ]]></description>
@@ -32,16 +32,16 @@
 
     <application-components>
         <component>
-            <implementation-class>org.quantifieddev.idea.BuildSettingsComponent</implementation-class>
+            <implementation-class>co.oneself.idea.BuildSettingsComponent</implementation-class>
         </component>
         <component>
-            <implementation-class>org.quantifieddev.idea.IDEActivityComponent</implementation-class>
+            <implementation-class>co.oneself.idea.IDEActivityComponent</implementation-class>
         </component>
     </application-components>
 
     <project-components>
         <component>
-            <implementation-class>org.quantifieddev.idea.BuildStatusComponent</implementation-class>
+            <implementation-class>co.oneself.idea.BuildStatusComponent</implementation-class>
         </component>
     </project-components>
 
@@ -50,10 +50,10 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceInterface="org.quantifieddev.idea.BuildSettingsPersister"
-                            serviceImplementation="org.quantifieddev.idea.BuildSettingsPersister"></applicationService>
-        <toolWindow id="Quantified Dev" anchor="bottom" secondary="true"
-                    factoryClass="org.quantifieddev.idea.ToolWindowFactory"
+        <applicationService serviceInterface="co.oneself.idea.BuildSettingsPersister"
+                            serviceImplementation="co.oneself.idea.BuildSettingsPersister"></applicationService>
+        <toolWindow id="1self" anchor="bottom" secondary="true"
+                    factoryClass="co.oneself.idea.ToolWindowFactory"
                     icon="/QDLogo_13x13.png"></toolWindow>
     </extensions>
 </idea-plugin>

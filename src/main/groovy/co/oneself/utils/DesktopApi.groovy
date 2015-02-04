@@ -1,4 +1,4 @@
-package org.quantifieddev.utils
+package co.oneself.utils
 
 import java.awt.Desktop
 

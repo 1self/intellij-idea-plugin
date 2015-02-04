@@ -1,4 +1,4 @@
-package org.quantifieddev.idea
+package co.oneself.idea
 
 import javax.swing.*
 import java.awt.*

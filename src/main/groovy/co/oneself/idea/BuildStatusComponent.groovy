@@ -1,4 +1,4 @@
-package org.quantifieddev.idea
+package co.oneself.idea
 
 import com.intellij.openapi.compiler.CompilationStatusListener
 import com.intellij.openapi.compiler.CompileContext
@@ -9,15 +9,15 @@ import com.intellij.openapi.project.Project
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.ISODateTimeFormat
-import org.quantifieddev.Configuration
-import org.quantifieddev.lang.LanguageDetector
-import org.quantifieddev.utils.DirWalker
-import org.quantifieddev.utils.EventLogger
+import co.oneself.lang.LanguageDetector
+import co.oneself.repository.PlatformRepository
+import co.oneself.utils.DirWalker
+import co.oneself.utils.EventLogger
 
 import java.util.regex.Pattern
 
 class BuildStatusComponent implements ProjectComponent, CompilationStatusListener {
-    def static final String QUANTIFIED_DEV_BUILD_LOGGER = 'Quantified Dev Build Logger'
+    def static final String _1SELF_BUILD_LOGGER = '1self Build Logger'
     private final Project project
     private final BuildSettingsComponent settings
     private final CompileTask beforeCompileTask
@@ -49,7 +49,7 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
                     persist(startEvent)
                 }
                 catch (Exception e) {
-                    EventLogger.logError("Could Not Send Event to quantifieddev.org", e.message)
+                    EventLogger.logError("Could Not Send Event to 1self.co", e.message)
                 }
                 executionSuceeded
             }
@@ -66,7 +66,7 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
             persist(finishEvent)
         }
         catch (Exception e) {
-            EventLogger.logError("Could Not Send Event to quantifieddev.org", e.message)
+            EventLogger.logError("Could Not Send Event to 1self.co", e.message)
         }
     }
 
@@ -101,7 +101,6 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
         println("Initializing Project Component.")
         CompilerManager.getInstance(project).addCompilationStatusListener(this)
         CompilerManager.getInstance(project).addBeforeTask(beforeCompileTask)
-        Configuration.setPlatformReadWriteUri("${this.settings.platformUri}${this.settings.streamId}/events")
     }
 
     //ProjectComponent
@@ -113,7 +112,7 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
     //ProjectComponent
     @Override
     String getComponentName() {
-        QUANTIFIED_DEV_BUILD_LOGGER
+        _1SELF_BUILD_LOGGER
     }
 
     //todo: reflect on whether language property needs to be matured to object tags?
@@ -122,7 +121,6 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
     private def createBuildStartEventQD(startedOn) {
         [
                 'dateTime'  : startedOn,
-                'streamid'  : settings.streamId,
                 'location'  : ['lat': settings.latitude, 'long': settings.longitude],
                 'objectTags': ['Computer', 'Software'],
                 'actionTags': ['Build', 'Start'],
@@ -135,7 +133,6 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
     private def createBuildFinishEventQD(compilationStatus, finishedOn, buildDuration) {
         [
                 'dateTime'  : finishedOn,
-                'streamid'  : settings.streamId,
                 'location'  : ['lat': settings.latitude, 'long': settings.longitude],
                 'objectTags': ['Computer', 'Software'],
                 'actionTags': ['Build', 'Finish'],
@@ -147,6 +144,6 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
     }
 
     private def persist(Map event) {
-        Configuration.repository.insert(event, settings.writeToken);
+        PlatformRepository.getInstance().insert(event, settings.writeToken);
     }
 }

@@ -1,28 +1,32 @@
-package org.quantifieddev.repository
+package co.oneself.repository
 
 import groovyx.net.http.RESTClient
-import org.quantifieddev.utils.PlatformPersister
+import co.oneself.utils.PlatformPersister
 
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.LinkedBlockingQueue
 
+import static co.oneself.Configuration.*
+
 //@Slf4j
 class PlatformRepository {
-    def URI platformReadWriteUri
-    def URI platformStreamUri
     def BlockingQueue<Tuple> eventQueue = new LinkedBlockingQueue<Tuple>();
-    final def appId = "app-id-e2b2df17bf1f6994c1a661384fff2854"
-    final def appSecret = "app-secret-0382136771320146d964b6d35df69827e80d7d26e7b80d9fcff22c0c1403c6c4"
 
-    public PlatformRepository() {
-        println("Welcome to QuantifiedDev Idea Plugin")
+    private static PlatformRepository platformRepository = new PlatformRepository();
+
+    private PlatformRepository() {
+        println("Welcome to 1self Idea Plugin")
         Executors.newFixedThreadPool(1).submit(new PlatformPersister(eventQueue))
+    }
+
+    public static PlatformRepository getInstance() {
+        platformRepository
     }
 
     def register(String content) {
         println("Registering the plugin.")
-        RESTClient client = new RESTClient(platformStreamUri, 'application/json')
+        RESTClient client = new RESTClient(new URI(_1selfStreamUrl), 'application/json')
         def response = client.post([body: content, headers: ["Authorization": appId + ":" + appSecret]])
         if (response.status == 200) {
             println("Executed Successfully $response.data")

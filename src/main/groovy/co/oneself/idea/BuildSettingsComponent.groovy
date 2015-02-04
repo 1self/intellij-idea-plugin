@@ -1,4 +1,4 @@
-package org.quantifieddev.idea
+package co.oneself.idea
 
 import com.intellij.openapi.components.ApplicationComponent
 import com.intellij.openapi.components.ServiceManager
@@ -6,7 +6,6 @@ import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.options.ConfigurationException
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
-import org.quantifieddev.Configuration
 
 import javax.swing.*
 
@@ -16,10 +15,6 @@ public class BuildSettingsComponent implements ApplicationComponent, Configurabl
 
     public BuildSettingsComponent() {
         buildSettingsPersister = ServiceManager.getService(BuildSettingsPersister.class)
-    }
-
-    public String getPlatformUri() {
-        return buildSettingsPersister.getPlatformURI()
     }
 
     public String getStreamId() {
@@ -42,7 +37,8 @@ public class BuildSettingsComponent implements ApplicationComponent, Configurabl
         return buildSettingsPersister.getReadToken()
     }
 
-    public void setBuildSettingsData(final String streamId, final String readToken, final String latitude, final String longitude) {
+    public void setBuildSettingsData(
+            final String streamId, final String readToken, final String latitude, final String longitude) {
         buildSettingsPersister.setStreamId(streamId)
         buildSettingsPersister.setReadToken(readToken)
         buildSettingsPersister.setLatitude(Double.parseDouble(latitude))
@@ -53,7 +49,6 @@ public class BuildSettingsComponent implements ApplicationComponent, Configurabl
     @Override
     void initComponent() {
         println("Initializing App Component.")
-        Configuration.setPlatformStreamUri(this.buildSettingsPersister.platformURI)
         buildSettingsPersister.getState()
     }
 
@@ -65,12 +60,12 @@ public class BuildSettingsComponent implements ApplicationComponent, Configurabl
     @NotNull
     @Override
     public String getComponentName() {
-        return "QuantifiedDevComponent";
+        return "1selfComponent";
     }
 
     @Override
     public String getDisplayName() {
-        return "Quantified Dev Settings";
+        return "1self Settings";
     }
 
     @Nullable
