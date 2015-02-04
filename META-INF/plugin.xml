@@ -54,6 +54,6 @@
                             serviceImplementation="co.oneself.idea.BuildSettingsPersister"></applicationService>
         <toolWindow id="1self" anchor="bottom" secondary="true"
                     factoryClass="co.oneself.idea.ToolWindowFactory"
-                    icon="/QDLogo_13x13.png"></toolWindow>
+                    icon="/1selfLogo_13x13.png"></toolWindow>
     </extensions>
 </idea-plugin>

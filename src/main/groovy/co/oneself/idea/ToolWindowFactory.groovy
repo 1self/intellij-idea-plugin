@@ -70,7 +70,7 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         toolBar.add(settingsButton)
 
         _1selfDashboardButton = new JButton()
-        Image _1selfLogoImage = ImageIO.read(getClass().getResource('/QDLogo_24x24.png'))
+        Image _1selfLogoImage = ImageIO.read(getClass().getResource('/1selfLogo_24x24.png'))
         _1selfDashboardButton.setMargin(new Insets(0, 0, 0, 0))
         _1selfDashboardButton.setIcon(new ImageIcon(_1selfLogoImage))
         _1selfDashboardButton.setToolTipText("View my 1self dashboard in browser")
