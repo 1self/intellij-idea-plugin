@@ -19,7 +19,7 @@ configuration {
         version {
             major = 0  //number related to production release
             minor = 14 //changes or feature additions
-            micro = 0  //patches and bug fixes
+            micro = 1  //patches and bug fixes
             previous = 'None'
             complete = toCompleteVersion()
         }
