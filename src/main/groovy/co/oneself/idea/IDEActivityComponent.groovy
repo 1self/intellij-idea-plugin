@@ -106,6 +106,7 @@ class IDEActivityComponent implements ApplicationComponent, AWTEventListener {
     }
 
     private Map createActivityEvent(timeDurationInMillis) {
+        long timeDurationInSeconds = timeDurationInMillis / 1000
         [
                 "dateTime"  : ['$date': new DateTime().toString(DateFormat.isoDateTime)],
                 "location"  : [
@@ -116,7 +117,7 @@ class IDEActivityComponent implements ApplicationComponent, AWTEventListener {
                 "version"   : Configuration.appConfig.product.version.complete,
                 "objectTags": ['Computer', 'Software'],
                 "actionTags": ['Develop'],
-                "properties": ['Environment': 'IntellijIdea12', 'isUserActive': isUserActive, 'duration': timeDurationInMillis]
+                "properties": ['Environment': 'IntellijIdea12', 'isUserActive': isUserActive, 'duration': timeDurationInSeconds]
         ]
     }
 
