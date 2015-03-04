@@ -14,6 +14,7 @@ import co.oneself.repository.PlatformRepository
 import co.oneself.utils.DateFormat
 import co.oneself.utils.DesktopApi
 import co.oneself.utils.EventLogger
+import org.joda.time.format.ISODateTimeFormat
 
 import javax.imageio.ImageIO
 import javax.swing.*
@@ -148,7 +149,7 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         }
 
         [
-                "dateTime"  : ['$date': new DateTime().toString(DateFormat.isoDateTime)],
+                "dateTime"  : ['$date': new DateTime().toString(ISODateTimeFormat.dateTime().withZoneUTC())],
                 "location"  : [
                         "lat" : settings.latitude,
                         "long": settings.longitude

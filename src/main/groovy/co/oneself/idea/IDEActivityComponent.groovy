@@ -5,6 +5,7 @@ import org.joda.time.DateTime
 import co.oneself.Configuration
 import co.oneself.repository.PlatformRepository
 import co.oneself.utils.DateFormat
+import org.joda.time.format.ISODateTimeFormat
 
 import java.awt.*
 import java.awt.event.AWTEventListener
@@ -108,7 +109,7 @@ class IDEActivityComponent implements ApplicationComponent, AWTEventListener {
     private Map createActivityEvent(timeDurationInMillis) {
         long timeDurationInSeconds = timeDurationInMillis / 1000
         [
-                "dateTime"  : ['$date': new DateTime().toString(DateFormat.isoDateTime)],
+                "dateTime"  : ['$date': new DateTime().toString(ISODateTimeFormat.dateTime().withZoneUTC())],
                 "location"  : [
                         "lat" : settings.latitude,
                         "long": settings.longitude
