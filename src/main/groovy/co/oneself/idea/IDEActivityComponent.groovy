@@ -109,7 +109,7 @@ class IDEActivityComponent implements ApplicationComponent, AWTEventListener {
     private Map createActivityEvent(timeDurationInMillis) {
         long timeDurationInSeconds = timeDurationInMillis / 1000
         [
-                "dateTime"  : ['$date': new DateTime().toString(ISODateTimeFormat.dateTime().withZoneUTC())],
+                "dateTime"  : new DateTime().toString(),
                 "location"  : [
                         "lat" : settings.latitude,
                         "long": settings.longitude

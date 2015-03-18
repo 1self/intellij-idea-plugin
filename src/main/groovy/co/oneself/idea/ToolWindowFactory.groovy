@@ -149,7 +149,7 @@ class ToolWindowFactory implements com.intellij.openapi.wm.ToolWindowFactory {
         }
 
         [
-                "dateTime"  : ['$date': new DateTime().toString(ISODateTimeFormat.dateTime().withZoneUTC())],
+                "dateTime"  : new DateTime().toString(),
                 "location"  : [
                         "lat" : settings.latitude,
                         "long": settings.longitude

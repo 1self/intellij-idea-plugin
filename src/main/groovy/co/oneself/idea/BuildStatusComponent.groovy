@@ -7,8 +7,6 @@ import com.intellij.openapi.compiler.CompilerManager
 import com.intellij.openapi.components.ProjectComponent
 import com.intellij.openapi.project.Project
 import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormatter
-import org.joda.time.format.ISODateTimeFormat
 import co.oneself.lang.LanguageDetector
 import co.oneself.repository.PlatformRepository
 import co.oneself.utils.DirWalker
@@ -21,7 +19,6 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
     private final Project project
     private final BuildSettingsComponent settings
     private final CompileTask beforeCompileTask
-    private final DateTimeFormatter isoDateTimeFormat = ISODateTimeFormat.dateTimeNoMillis()
     private final languages
     private final long timeToDetectProjectLanguages
     private final long totalFilesScanned
@@ -45,7 +42,7 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
             boolean execute(CompileContext compileContext) {
                 def executionSuceeded = true    //Exception in plugin should not abort the compilation
                 try {
-                    def startEvent = createBuildStartEvent(new DateTime(compileContext.properties.startCompilationStamp).toString(isoDateTimeFormat))
+                    def startEvent = createBuildStartEvent(new DateTime(compileContext.properties.startCompilationStamp).toString())
                     persist(startEvent)
                 }
                 catch (Exception e) {
@@ -61,7 +58,7 @@ class BuildStatusComponent implements ProjectComponent, CompilationStatusListene
     void compilationFinished(boolean aborted, int errors, int warnings, final CompileContext compileContext) {
         try {
             def buildDuration = DateTime.now().millis - compileContext.properties.startCompilationStamp
-            def buildFinishTime = new DateTime().toString(isoDateTimeFormat)
+            def buildFinishTime = new DateTime().toString()
             def finishEvent = createBuildFinishEvent(getCompilationStatus(aborted, errors), buildFinishTime, buildDuration)
             persist(finishEvent)
         }

@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>co.oneself.build.plugin.id</id>
     <name>1self Idea Plugin</name>
-    <version>0.14.1</version>
+    <version>0.14.3</version>
     <vendor email="team@1self.co" url="http://www.1self.co">1self</vendor>
 
     <description><![CDATA[
